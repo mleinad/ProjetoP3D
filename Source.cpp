@@ -15,20 +15,63 @@
 #pragma comment(lib, "opengl32.lib")
 
 
+GLfloat ZOOM = 10.0f;
+
+void scrollCallback(GLFWwindow* window, double xoffset, double yoffset) {
+	// Se faz zoom in
+	if (yoffset == 1) {
+		// Incremento no zoom, varia com a distância da câmara
+		ZOOM += fabs(ZOOM) * 0.1f;
+	}
+	// Senão, se faz zoom out
+	else if (yoffset == -1) {
+		// Incremento no zoom, varia com a distância da câmara
+		ZOOM -= fabs(ZOOM) * 0.1f;
+	}
+	std::cout << "ZOOM = " << ZOOM << std::endl;
+}
+void print_error(int error, const char* description);
+
+
+
 int main() {
-
-    if (!glfwInit()) return -1;
-
-    GLFWwindow* window;
-    window = glfwCreateWindow(800, 600, "new window", nullptr, nullptr);
-    glfwMakeContextCurrent(window);
-
-    GLint data;
-
-    glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, &data);
-
-    printf("max att: %d\n", data);
+	
+	
+	GLFWwindow* window;
 
 
+	glfwSetErrorCallback(print_error);
+	
+	
+	if (!glfwInit()) return -1;
+
+	GLFWmonitor* monitor = glfwGetPrimaryMonitor();
+	const GLFWvidmode* videoMode = glfwGetVideoMode(monitor);
+
+
+	window = glfwCreateWindow(videoMode->width, videoMode->height, "P3D - Trabalho Pratico 1 (Part #1)", monitor, NULL);
+	if (window == NULL) {
+		glfwTerminate();
+		return -1;
+	}
+
+	glfwMakeContextCurrent(window);
+
+	glfwSetScrollCallback(window, scrollCallback);
+
+
+	while (!glfwWindowShouldClose(window)) {
+
+		glfwSwapBuffers(window);
+		glfwPollEvents();
+	}
+
+	glfwTerminate();
 	return 0;
+}
+
+
+
+void print_error(int error, const char* description) {
+	std::cout << description << std::endl;
 }
