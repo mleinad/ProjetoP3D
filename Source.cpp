@@ -77,7 +77,6 @@ std::vector<glm::vec3> loadTestModel() {
 
 	return ret;
 }
-
 void display(std::vector<glm::vec3> obj, glm::mat4 mvp) {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -127,13 +126,15 @@ void testCube(glm::mat4 projection, std::vector<glm::vec3> object,float & angle)
 
 	display(object, mvp);
 }
+
+
 int main() {
 	
 	
 	GLFWwindow* window;
 
 
-	glfwSetErrorCallback(print_error);
+	glfwSetErrorCallback(print_error);  
 	
 	
 	
