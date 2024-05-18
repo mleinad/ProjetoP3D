@@ -1,26 +1,5 @@
 #include "Object3D.h"
 
-
-class Object3D
-{
-public:
-	Object3D();
-	~Object3D();
-	
-	bool loadOBJ(const char* path);
-
-
-		
-	std::vector < glm::vec3 > vertices;
-	std::vector < glm::vec2 > uvs;
-	std::vector < glm::vec3 > normals;
-
-private:
-
-
-
-};
-
 Object3D::Object3D()
 {
 }
@@ -28,7 +7,6 @@ Object3D::Object3D()
 Object3D::~Object3D()
 {
 }
-
 
 bool Object3D ::loadOBJ(const char* path){
 	
@@ -58,7 +36,7 @@ bool Object3D ::loadOBJ(const char* path){
 		if (res == EOF)
 			break; // fim do ficheiro
 
-		if (strcmp(lineHeader, "V") == 0) { //vertices
+		if (strcmp(lineHeader, "v") == 0) { //vertices
 			glm::vec3 vertex;
 			fscanf(file, "%f %f %f\n", &vertex.x, &vertex.y, &vertex.z);
 			temp_vertices.push_back(vertex);
@@ -70,7 +48,7 @@ bool Object3D ::loadOBJ(const char* path){
 		}
 		else if (strcmp(lineHeader, "vn") == 0) { //normais
 			glm::vec3 normal;
-			fscanf(file, "%f %f %f\n", &normal.x, normal.y, normal.z);
+			fscanf(file, "%f %f %f\n", &normal.x, &normal.y, &normal.z);
 			temp_normals.push_back(normal);
 		}
 		else if (strcmp(lineHeader, "f") == 0) { //faces e indices 
@@ -101,22 +79,18 @@ bool Object3D ::loadOBJ(const char* path){
 			fgets(miscBuffer, 1000, file);
 		}
 	}
-
-
-	// For each vertex of each triangle
+	
 	for (unsigned int i = 0; i < vertexIndices.size(); i++) {
 
-		// Get the indices of its attributes
 		unsigned int vertexIndex = vertexIndices[i];
 		unsigned int uvIndex = uvIndices[i];
 		unsigned int normalIndex = normalIndices[i];
 
-		// Get the attributes thanks to the index
-		glm::vec3 vertex = temp_vertices[vertexIndex - 1];
+		glm::vec3 vertex = temp_vertices[vertexIndex-1];
 		glm::vec2 uv = temp_uvs[uvIndex - 1];
 		glm::vec3 normal = temp_normals[normalIndex - 1];
 
-		// Put the attributes in buffers
+	
 		this->vertices.push_back(vertex);
 		this->uvs.push_back(uv);
 		this->normals.push_back(normal);
@@ -125,4 +99,27 @@ bool Object3D ::loadOBJ(const char* path){
 	fclose(file);
 	return true;
 
+}
+
+void Object3D::printInfo(int numLines) {
+	// Print vertices
+	std::cout << "Vertices:" << std::endl;
+	for (int i = 0; i < vertices.size() && (numLines == -1 || i < numLines); ++i) {
+		const auto& vertex = vertices[i];
+		std::cout << "  (" << vertex.x << ", " << vertex.y << ", " << vertex.z << ")" << std::endl;
+	}
+
+	// Print texture coordinates (UVs)
+	std::cout << "UVs:" << std::endl;
+	for (int i = 0; i < uvs.size() && (numLines == -1 || i < numLines); ++i) {
+		const auto& uv = uvs[i];
+		std::cout << "  (" << uv.x << ", " << uv.y << ")" << std::endl;
+	}
+
+	// Print normals
+	std::cout << "Normals:" << std::endl;
+	for (int i = 0; i < normals.size() && (numLines == -1 || i < numLines); ++i) {
+		const auto& normal = normals[i];
+		std::cout << "  (" << normal.x << ", " << normal.y << ", " << normal.z << ")" << std::endl;
+	}
 }

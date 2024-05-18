@@ -1,21 +1,11 @@
-#define GLM_ENABLE_EXPERIMENTAL
-
-#include <iostream>
-#include <vector>
-
-#define GLEW_STATIC
-#include <GL\glew.h>
-#include <GLFW\glfw3.h>
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtx/string_cast.hpp>
-
 #include <glm/gtc/type_ptr.hpp> // value_ptr
 #include <glm/gtc/matrix_transform.hpp> // translate, rotate, scale, perspective, ...
 
 #pragma comment(lib, "glew32s.lib")
 #pragma comment(lib, "glfw3.lib")
 #pragma comment(lib, "opengl32.lib")
+
+#include "Object3D.h"
 
 
 GLfloat ZOOM = 10.0f;
@@ -144,7 +134,7 @@ int main() {
 	const GLFWvidmode* videoMode = glfwGetVideoMode(monitor);
 
 
-	window = glfwCreateWindow(videoMode->width, videoMode->height, "P3D - Trabalho Pratico 1 (Part #1)", monitor, NULL);
+	window = glfwCreateWindow(800, 600, "P3D - Trabalho Pratico 1 (Part #1)", NULL, NULL);
 	if (window == NULL) {
 		glfwTerminate();
 		return -1;
@@ -155,7 +145,11 @@ int main() {
 	glfwSetScrollCallback(window, scrollCallback);
 
 
+	Object3D ball;
 
+	ball.loadOBJ("Ball1.obj");
+
+	ball.printInfo();
 
 	std::vector<glm::vec3> object = loadTestModel();
 	glm::mat4 projection = glm::perspective(glm::radians(45.0f), float(videoMode->width) / float(videoMode->height), 0.1f, 100.f);
