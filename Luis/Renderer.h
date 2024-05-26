@@ -17,6 +17,9 @@ bool GLLogCall(const char* function, const char* file, int line);
 class Buffer {
 private:
 public:
-	void Draw(const VertexArray& VA, const IndexBuffer& IB, const Shader& shader) const;
+	void Draw(const VertexArray& VA, const int count, const Shader& shader) const;
+
+	void Draw(const VertexArray& VA, const IndexBuffer& IB, const Shader& shader)const;
+	
 	void Clear();
 };

@@ -5,70 +5,61 @@
 #pragma comment(lib, "glfw3.lib")
 #pragma comment(lib, "opengl32.lib")
 
-#include "Object3D.h"
 
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb_image.h";
+
+//#include "Luis/Renderer.h"
+//#include "Luis/VertexBuffer.h"
+//#include "Luis/IndexBuffer.h"
+//#include "Luis/VertexArray.h"
+//#include "Luis/VertexBufferLayout.h"
+
+#include <sstream>
+
+
+
+#include "Object3D.h"
+#include <glm/gtc/matrix_inverse.hpp>
+#include <thread>
+#include "Light.h"
+
+extern "C"
+{
+	__declspec(dllexport) unsigned long NvOptimusEnablement = 0x00000001;
+}
 
 GLfloat ZOOM = 10.0f;
+float angle = 0.0f;
+
+glm::mat3 NormalMatrix;
+
 
 void scrollCallback(GLFWwindow* window, double xoffset, double yoffset) {
 	//zoom in
 	if (yoffset == 1) {
-		
-		ZOOM += fabs(ZOOM) * 0.1f;
+
+		ZOOM -= fabs(ZOOM) * 0.1f;
 	}
 	//zoom out
 	else if (yoffset == -1) {
-		
-		ZOOM -= fabs(ZOOM) * 0.1f;
+
+		ZOOM += fabs(ZOOM) * 0.1f;
+
 	}
-	std::cout << "ZOOM = " << ZOOM << std::endl;
+
 }
+void GLAPIENTRY MessageCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam) {
+	std::cout << "ERROR " << message;
+}
+
 void print_error(int error, const char* description);
+void load_textures(std::vector<std::string> textureFiles);
 
-
-std::vector<glm::vec3> loadTestModel() {
-	// 6 faces * 4 vértices por face
-	glm::vec3 point[6 * 4] = {
-		// Frente
-		glm::vec3(-1.0f, -1.0f,  1.0f),
-		glm::vec3(1.0f, -1.0f,  1.0f),
-		glm::vec3(1.0f,  1.0f,  1.0f),
-		glm::vec3(-1.0f,  1.0f,  1.0f),
-		// Trás
-		glm::vec3(-1.0f, -1.0f, -1.0f),
-		glm::vec3(-1.0f,  1.0f, -1.0f),
-		glm::vec3(1.0f,  1.0f, -1.0f),
-		glm::vec3(1.0f, -1.0f, -1.0f),
-		// Direita
-		glm::vec3(1.0f, -1.0f,  1.0f),
-		glm::vec3(1.0f, -1.0f, -1.0f),
-		glm::vec3(1.0f,  1.0f, -1.0f),
-		glm::vec3(1.0f,  1.0f,  1.0f),
-		// Esquerda
-		glm::vec3(-1.0f, -1.0f,  1.0f),
-		glm::vec3(-1.0f,  1.0f,  1.0f),
-		glm::vec3(-1.0f,  1.0f, -1.0f),
-		glm::vec3(-1.0f, -1.0f, -1.0f),
-		// Cima
-		glm::vec3(-1.0f,  1.0f,  1.0f),
-		glm::vec3(1.0f,  1.0f,  1.0f),
-		glm::vec3(1.0f,  1.0f, -1.0f),
-		glm::vec3(-1.0f,  1.0f, -1.0f),
-		// Baixo
-		glm::vec3(-1.0f, -1.0f,  1.0f),
-		glm::vec3(-1.0f, -1.0f, -1.0f),
-		glm::vec3(1.0f, -1.0f, -1.0f),
-		glm::vec3(1.0f, -1.0f,  1.0f)
-	};
-
-	std::vector<glm::vec3> ret;
-	for (auto i : point)
-		ret.push_back(i);
-
-	return ret;
-}
 void display(std::vector<glm::vec3> obj, glm::mat4 mvp) {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); //wireframe
 
 	float* vertex_stream = static_cast<float*>(glm::value_ptr(obj.front()));
 
@@ -82,23 +73,31 @@ void display(std::vector<glm::vec3> obj, glm::mat4 mvp) {
 	};
 
 	// Desenha quad em modo imediato
-	glBegin(GL_QUADS);
+	glBegin(GL_TRIANGLES);
 	/* obj.size() * (obj.front().length()) é o mesmo que (6*4)*3 */
 	/* 6 faces * 4 vértices por face * 3 coordenadas por vértice */
-	for (int nv = 0; nv < 6 * 4 * 3; nv += 3) {
-		// Uma cor por face
-		glColor3f(colors[nv / (4 * 3)].r, colors[nv / (4 * 3)].g, colors[nv / (4 * 3)].b);
-		glm::vec4 vertex = glm::vec4(vertex_stream[nv], vertex_stream[nv + 1], vertex_stream[nv + 2], 1.0f);
-		// Cálculo das coordenadas de recorte
-		glm::vec4 transformed_vertex = mvp * vertex;
-		// Divisão de Perspetiva
+	for (size_t i = 0; i < obj.size(); ++i) {
+		// Assign a color based on the face index, reusing colors if needed
+		const glm::vec3& color = colors[i / 3 % colors.size()];
+		glColor3f(color.r, color.g, color.b);
+
+		// Access the vertex
+		const glm::vec3& vertex = obj[i];
+
+		// Transform the vertex by the MVP matrix
+		glm::vec4 transformed_vertex = mvp * glm::vec4(vertex, 1.0f);
+
+		// Perform perspective division
 		glm::vec4 normalized_vertex = transformed_vertex / transformed_vertex.w;
-		// Desenho do vértice
+
+		// Issue the vertex to OpenGL
 		glVertex3f(normalized_vertex.x, normalized_vertex.y, normalized_vertex.z);
 	}
 	glEnd();
 }
-void testCube(glm::mat4 projection, std::vector<glm::vec3> object,float & angle) 
+
+
+void draw(glm::mat4 projection, std::vector<glm::vec3> object, float& angle)
 {
 
 
@@ -107,10 +106,13 @@ void testCube(glm::mat4 projection, std::vector<glm::vec3> object,float & angle)
 		glm::vec3(0.0f, 0.0f, -1.0f),	// Direção para a qual a câmara esta apontada
 		glm::vec3(0.0f, 1.0f, 0.0f)		// Vector vertical
 	);
+
 	// Model
 	glm::mat4 model = glm::mat4(1.0f);
+
 	// Vai efetuando uma rotação ao objeto (apenas para podermos ver todas as faces desenhadas).
-	model = glm::rotate(model, angle += 0.00001, glm::normalize(glm::vec3(1.0f, 1.0f, 0.0f)));
+	model = glm::rotate(model, angle += 0.001, glm::normalize(glm::vec3(1.0f, 1.0f, 0.0f)));
+
 	// MVP
 	glm::mat4 mvp = projection * view * model;
 
@@ -119,22 +121,24 @@ void testCube(glm::mat4 projection, std::vector<glm::vec3> object,float & angle)
 
 
 int main() {
-	
-	
+
+
 	GLFWwindow* window;
 
 
-	glfwSetErrorCallback(print_error);  
-	
-	
-	
+	glfwSetErrorCallback(print_error);
+
+
+
 	if (!glfwInit()) return -1;
+
+
 
 	GLFWmonitor* monitor = glfwGetPrimaryMonitor();
 	const GLFWvidmode* videoMode = glfwGetVideoMode(monitor);
 
 
-	window = glfwCreateWindow(800, 600, "P3D - Trabalho Pratico 1 (Part #1)", NULL, NULL);
+	window = glfwCreateWindow(800, 600, "P3D - Trabalho Pratico 1 (Part #1)", nullptr, NULL);
 	if (window == NULL) {
 		glfwTerminate();
 		return -1;
@@ -142,36 +146,290 @@ int main() {
 
 	glfwMakeContextCurrent(window);
 
+	glewExperimental = GL_TRUE;
+	if (glewInit()) { //Access violation executing location 0x00000000 sem isto depois da window 
+		printf("failed to initialize OpenGL\n");
+		return -1;
+	}
+
+
+	// Enable debug output
+	glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GL_TRUE);
+	glEnable(GL_DEBUG_OUTPUT);
+	glDebugMessageCallback(MessageCallback, 0);
+
+
 	glfwSetScrollCallback(window, scrollCallback);
 
 
-	Object3D ball;
+	Object3D ball("OBJ files/Ball1.obj");
 
-	ball.loadOBJ("Ball1.obj");
+	Object3D cube("OBJ files/cube.obj");
 
-	ball.printInfo();
+	ball.loadMTL("Ball1.mtl");
 
-	std::vector<glm::vec3> object = loadTestModel();
-	glm::mat4 projection = glm::perspective(glm::radians(45.0f), float(videoMode->width) / float(videoMode->height), 0.1f, 100.f);
 
-	float angle = 0;
-	while (!glfwWindowShouldClose(window)) {
 
-		testCube(projection, object, angle);
+
+	Object3D models[15];
+	for (int i = 0; i < 15; ++i){
+
+		std::string fileName = "OBJ files/Ball" + std::to_string(i + 1) + ".obj";
+		models[i].loadOBJ(fileName.c_str());
+
+	}
+
+
+
+
+
+
+	//object.printInfo();
+
+
+	glm::mat4 projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 1000.f);
+
+	glm::mat4 view = glm::lookAt(
+		glm::vec3(0.0f, 0.0f, ZOOM),	// Posição da câmara no mundo
+		glm::vec3(0.0f, 0.0f, -1.0f),	// Direção para a qual a câmara esta apontada
+		glm::vec3(0.0f, 1.0f, 0.0f)		// Vector vertical
+	);
+
+	glm::mat4 model = glm::mat4(1.0f);
+	glm::mat4 mvp = projection * view * model;
+
+
+	glm::vec3 white(1.0f, 1.0f, 1.0f);
+	float intensity = 0.0f;
+	glm::vec3 direction(2.0f, -1.0f, -2.0f);
+	Light light(white, intensity, direction, 1.0f);
+
+	VertexArray VAO[2];
+
+
+	//ou object.vertices.data() 
+	VertexBuffer VBO(&ball.mesh[0], ball.mesh.size() * sizeof(glm::vec3));
+
+	VertexBuffer VBO_2(&cube.mesh[0], cube.mesh.size() * sizeof(glm::vec3));
+
+	VertexBufferLayout layout_v;
+
+
+
+
+	layout_v.Push<glm::vec3>(1);
+	layout_v.Push<glm::vec3>(1);
+
+
+	VAO[0].AddBuffer(VBO, layout_v);
+	
+	//VAO_1.AddBuffer(VBO_2, layout_v);
+	VAO[1].AddBuffer(VBO_2, layout_v);
+
+
+
+	VAO[0].Bind();
+
+
+
+	Shader shader("shaders/shader.frag", "shaders/shader.vert");
+
+	shader.Bind(); 
+
+
+
+	VAO[1].Bind();
+	shader.Bind();
+
+
+	shader.SetUniformMat4f("u_MPV", mvp);
+
+	shader.SetUniform4f("u_Color", 0.8f, 1.0f, 0.8f, 1.0f);
+
+	shader.SetUniform1f("material.specularIntensity", 0.5f);
+	shader.SetUniform1f("material.shininess", 32.0f);
+
+
+
+	VAO[0].Unbind();
+	VAO[1].Unbind();
+	VBO.Unbind();
+	VBO_2.Unbind();
+	shader.Unbind();
+
+	Buffer buffer;
+
+
+
+
+
+	glEnable(GL_DEPTH_TEST);
+
+	glm::vec3 world_position(0.0f, 0.0f, 0.0f);
+	glm::vec3 translationA(3.0f, 0.0f, 0.0f);
+	glm::vec3 translationB(-3.0f, 0.0f, 0.0f);
+
+	while (!glfwWindowShouldClose(window))
+	{
+
+
+		buffer.Clear();
+
+		// Model
+
+		view = glm::lookAt(world_position, glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+
+		world_position.z = ZOOM;
+
+
+		//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		
+
+			shader.Bind();
+			light.UseLight(shader);
+
+			glm::vec3 translation;
+			for (int i=0; i<2; i++)
+			{
+				if (i == 0) translation = translationA;
+				else translation = translationB;
+
+				model = glm::translate(glm::mat4(1.0f), translation);
+				mvp = projection * view * model;
+				shader.SetUniformMat4f("u_MPV", mvp);
+				buffer.Draw(VAO[i], ball.vertices.size(), shader);
+			}
+		
+
+
+
+
+
 
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();
+
 	}
 
 	glfwTerminate();
 	return 0;
 }
 
-
-
-
-
 void print_error(int error, const char* description) {
 	std::cout << description << std::endl;
+}
+
+
+
+void load_textures(std::vector<std::string> textureFiles) {
+
+	GLuint textureName = 0;
+
+	// Gera um nome de textura
+	glGenTextures(1, &textureName);
+
+	// Ativa a Unidade de Textura #0
+	// A Unidade de Textura 0 está ativa por defeito.
+	// Só uma Unidade de Textura pode estar ativa.
+	glActiveTexture(GL_TEXTURE0);
+
+	// Vincula esse nome de textura ao target GL_TEXTURE_CUBE_MAP da Unidade de Textura ativa.
+	glBindTexture(GL_TEXTURE_CUBE_MAP, textureName);
+
+	// NOTA:
+	// Num cube map de texturas, todas as texturas devem:
+	// - ter a mesma resolução;
+	// - possuir o mesmo número de níveis de mipmap; e,
+	// - partilhar os mesmos parâmetros.
+
+	// Define os parâmetros de filtragem (wrapping e ajuste de tamanho)
+	// para a textura que está vinculada ao target GL_TEXTURE_CUBE_MAP da Unidade de Textura ativa.
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+#ifdef _D_STORAGE
+	// Aloca memória para o cube map de texturas
+	// Textura imutável, i.e., apenas é possível alterar a imagem.
+	{
+		// Leitura da resolução e número de canais da imagem.
+		int width, height, nChannels;
+		// Ativa a inversão vertical da imagem, aquando da sua leitura para memória.
+		stbi_set_flip_vertically_on_load(true);
+		unsigned char* imageData = stbi_load(textureFiles[0].c_str(), &width, &height, &nChannels, 0);
+		if (imageData) {
+			stbi_image_free(imageData);
+
+			// Alocação de memória
+			glTexStorage2D(GL_TEXTURE_CUBE_MAP,
+				1,					// Número de níveis de Mipmap para as texturas. 1 se não forem utilizados Mipmaps.
+				nChannels == 4 ? GL_RGBA8 : GL_RGB8,	// Formato interno da imagem de textura
+				width, height		// width, height
+			);
+		}
+		else {
+			cout << "Error loading texture!" << endl;
+		}
+	}
+
+	// Para cada face do cubo
+	GLint face = 0;
+	for (auto file : textureFiles) {
+		// Leitura/descompressão do ficheiro com imagem de textura
+		int width, height, nChannels;
+		unsigned char* imageData = stbi_load(file.c_str(), &width, &height, &nChannels, 0);
+		if (imageData) {
+			// Carrega os dados da imagem para o Objeto de Textura vinculado ao target da face
+			glTexSubImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + face,
+				0,					// Nível do Mipmap
+				0, 0,				// xoffset, yoffset
+				width, height,		// width, height
+				nChannels == 4 ? GL_RGBA : GL_RGB,	// Formato da imagem
+				GL_UNSIGNED_BYTE,	// Tipos dos dados da imagem
+				imageData);			// Apontador para os dados da imagem de textura
+
+			face++;
+
+			// Liberta a imagem da memória do CPU
+			stbi_image_free(imageData);
+		}
+		else {
+			cout << "Error loading texture!" << endl;
+		}
+	}
+#else
+	// Ativa a inversão vertical da imagem, aquando da sua leitura para memória.
+	stbi_set_flip_vertically_on_load(true);
+
+	// Para cada face do cubo
+	GLint face = 0;
+
+	for (auto file : textureFiles) {
+		// Leitura/descompressão do ficheiro com imagem de textura
+		int width, height, nChannels;
+		unsigned char* imageData = stbi_load(file.c_str(), &width, &height, &nChannels, 0);
+		if (imageData) {
+			// Carrega os dados da imagem para o Objeto de Textura vinculado ao target da face
+			glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + face,
+				0,					// Nível do Mipmap
+				GL_RGB,				// Formato interno do OpenGL
+				width, height,		// width, height
+				0,					// border
+				nChannels == 4 ? GL_RGBA : GL_RGB,	// Formato da imagem
+				GL_UNSIGNED_BYTE,	// Tipos dos dados da imagem
+				imageData);			// Apontador para os dados da imagem de textura
+
+			face++;
+
+			// Liberta a imagem da memória do CPU
+			stbi_image_free(imageData);
+		}
+		else {
+			std::cout << "Error loading texture!" << std::endl;
+		}
+	}
+#endif
 }

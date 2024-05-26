@@ -1,11 +1,27 @@
 #include "Object3D.h"
 
+Object3D::Object3D(const char* path)
+{
+	loadOBJ(path);
+
+
+	printf("%s\n", material.mtl_path);
+	//loadMTL(material.path.c_str());
+
+
+}
+
+
+
 Object3D::Object3D()
 {
+
 }
+
 
 Object3D::~Object3D()
 {
+
 }
 
 bool Object3D ::loadOBJ(const char* path){
@@ -24,7 +40,8 @@ bool Object3D ::loadOBJ(const char* path){
 	FILE* file = fopen(path, "r");
 	
 	if (file == NULL) {
-		printf("Impossible to open the file !\n");
+		printf("Impossible to open the file !\n"); 
+		getchar();
 		return false;
 	}
 
@@ -36,8 +53,11 @@ bool Object3D ::loadOBJ(const char* path){
 		if (res == EOF)
 			break; // fim do ficheiro
 
+		//ler o mtl tambem
+
+
 		if (strcmp(lineHeader, "v") == 0) { //vertices
-			glm::vec3 vertex;
+			glm::vec3 vertex; 
 			fscanf(file, "%f %f %f\n", &vertex.x, &vertex.y, &vertex.z);
 			temp_vertices.push_back(vertex);
 		}
@@ -57,9 +77,10 @@ bool Object3D ::loadOBJ(const char* path){
 			int matches = fscanf(file, "%d/%d/%d %d/%d/%d %d/%d/%d\n", &vertexIndex[0], &uvIndex[0], &normalIndex[0], &vertexIndex[1], &uvIndex[1], &normalIndex[1], &vertexIndex[2], &uvIndex[2], &normalIndex[2]);
 			if (matches != 9) {
 				printf("ficheiro incompativel\n");
+				getchar();
 				return false;
 			}
-
+		
 			//indices dos vertices
 			vertexIndices.push_back(vertexIndex[0]);
 			vertexIndices.push_back(vertexIndex[1]);
@@ -72,6 +93,15 @@ bool Object3D ::loadOBJ(const char* path){
 			normalIndices.push_back(normalIndex[0]);
 			normalIndices.push_back(normalIndex[1]);
 			normalIndices.push_back(normalIndex[2]);
+		}
+		else if (strcmp(lineHeader, "mtllib") == 0) { //nome do ficheiro da imagem de textura:
+			char temp_buffer[128];
+			fscanf(file, "%127s", temp_buffer);
+			std::string temp_mtl = temp_buffer;
+		
+			//material.texture = temp_mtl;
+			printf("temp_mtl : %s\n", material.texture);
+		
 		}
 		else {
 			// comentarios, etc...
@@ -90,16 +120,87 @@ bool Object3D ::loadOBJ(const char* path){
 		glm::vec2 uv = temp_uvs[uvIndex - 1];
 		glm::vec3 normal = temp_normals[normalIndex - 1];
 
-	
+
+		this->mesh.push_back(vertex);
+		this->mesh.push_back(normal);
+		 
 		this->vertices.push_back(vertex);
 		this->uvs.push_back(uv);
 		this->normals.push_back(normal);
 
 	}
 	fclose(file);
+
+	
 	return true;
 
+
 }
+
+bool Object3D::loadMTL(const char* path) 
+{
+	glm::vec3 temp_ambient;
+	glm::vec3 temp_difuse;
+	glm::vec3 temp_specular;
+	float temp_shininess;
+	std::string temp_text;
+
+	printf("Loading MTL file %s...\n", path);
+
+
+	FILE* file = fopen(path, "r");
+
+	if (file == NULL) {
+		printf("Impossible to open the file !\n");
+		getchar();
+		return false;
+	}
+
+	while (1) //lê linha a linha o ficheiro mtl e armazena os: Ka, Kd, Ks e Ns
+	{
+		char lineHeader[128];
+		//ler a primeira palavra da linha
+		int res = fscanf(file, "%s", lineHeader);
+		if (res == EOF)
+			break; // fim do ficheiro
+
+		if (strcmp(lineHeader, "Ns") == 0) { //Ns Expoente especular
+			
+			fscanf(file, "%f\n", &temp_shininess);
+		}
+		else if (strcmp(lineHeader, "Ka") == 0) { //Ka Coeficiente de reflexão da luz ambiente 
+
+			fscanf(file, "%f %f %f\n", &temp_ambient.x, &temp_ambient.y, &temp_ambient.z);
+		}
+		else if (strcmp(lineHeader, "Kd") == 0) { //Kd Coeficiente de reflexão da luz difusa
+			
+			fscanf(file, "%f %f %f\n", &temp_difuse.x, &temp_difuse.y, &temp_difuse.z);
+		}
+		else if (strcmp(lineHeader, "Ks") == 0) { //Ks Coeficiente de reflexão da luz especular 
+		
+			fscanf(file, "%f %f %f\n", &temp_specular.x, &temp_specular.y, &temp_specular.z);
+		}
+		else if (strcmp(lineHeader, "map_Kd") == 0) { //nome do ficheiro da imagem de textura:
+			char temp_buffer[128]; 
+			fscanf(file, "%127s", temp_buffer); 
+			temp_text = temp_buffer;
+
+		}
+	}
+
+	fclose(file);
+	
+	material.shininess = temp_shininess;
+	material.difuse = temp_difuse;
+	material.specular = temp_specular;
+	material.ambient = temp_ambient;
+	material.texture = temp_text;
+
+	return true;
+
+
+}
+
 
 void Object3D::printInfo(int numLines) {
 	// Print vertices
@@ -122,4 +223,9 @@ void Object3D::printInfo(int numLines) {
 		const auto& normal = normals[i];
 		std::cout << "  (" << normal.x << ", " << normal.y << ", " << normal.z << ")" << std::endl;
 	}
+
 }
+
+
+
+

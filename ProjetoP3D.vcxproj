@@ -128,12 +128,30 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="InputControls.cpp" />
+    <ClCompile Include="Light.cpp" />
+    <ClCompile Include="Luis\IndexBuffer.cpp" />
+    <ClCompile Include="Luis\Renderer.cpp" />
+    <ClCompile Include="Luis\Shader.cpp" />
+    <ClCompile Include="Luis\VertexArray.cpp" />
+    <ClCompile Include="Luis\VertexBuffer.cpp" />
     <ClCompile Include="Object3D.cpp" />
     <ClCompile Include="Source.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="InputControls.h" />
+    <ClInclude Include="Light.h" />
+    <ClInclude Include="Luis\IndexBuffer.h" />
+    <ClInclude Include="Luis\Renderer.h" />
+    <ClInclude Include="Luis\Shader.h" />
+    <ClInclude Include="Luis\VertexArray.h" />
+    <ClInclude Include="Luis\VertexBuffer.h" />
+    <ClInclude Include="Luis\VertexBufferLayout.h" />
     <ClInclude Include="Object3D.h" />
+    <ClInclude Include="stb_image.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="shaders\shader.frag" />
+    <None Include="shaders\shader.vert" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

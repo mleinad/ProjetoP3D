@@ -59,6 +59,12 @@ public:
 		m_Stride += count * VertexBufferElement::GetSizeOfType(GL_UNSIGNED_BYTE);
 	}
 
+	template<>
+	void Push<glm::vec3>(unsigned int count) {
+		m_Elements.push_back(VertexBufferElement({ GL_FLOAT, count*3, GL_TRUE }));
+		m_Stride += (count*3) * VertexBufferElement::GetSizeOfType(GL_FLOAT);
+	}
+	
 	inline const std::vector<VertexBufferElement> GetElements() const& { return m_Elements; }
 	inline unsigned int GetStride() const { return m_Stride; }
 

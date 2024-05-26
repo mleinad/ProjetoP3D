@@ -1,8 +1,40 @@
-﻿  Source.cpp
-C:\Users\danie\OneDrive\Documentos\IPCA\2º Ano\PROG 3D v2\Projeto\ProjetoP3D\ProjetoP3D\Source.cpp(113,45): warning C4305: '+=': truncation from 'double' to 'float'
+﻿  Object3D.cpp
+C:\Users\danie\OneDrive\Documentos\IPCA\2º Ano\PROG 3D v2\Projeto\ProjetoP3D\ProjetoP3D\Object3D.cpp(8,9): warning C4477: 'printf' : format string '%s' requires an argument of type 'char *', but variadic argument 1 has type 'std::string'
+C:\Users\danie\OneDrive\Documentos\IPCA\2º Ano\PROG 3D v2\Projeto\ProjetoP3D\ProjetoP3D\Object3D.cpp(103,11): warning C4477: 'printf' : format string '%s' requires an argument of type 'char *', but variadic argument 1 has type 'std::string'
+     Creating library C:\Users\danie\OneDrive\Documentos\IPCA\2º Ano\PROG 3D v2\Projeto\ProjetoP3D\x64\Release\ProjetoP3D.lib and object C:\Users\danie\OneDrive\Documentos\IPCA\2º Ano\PROG 3D v2\Projeto\ProjetoP3D\x64\Release\ProjetoP3D.exp
+MSVCRT.lib(initializers.obj) : warning LNK4098: defaultlib 'libcmt.lib' conflicts with use of other libs; use /NODEFAULTLIB:library
   Generating code
-  2 of 280 functions ( 0.7%) were compiled, the rest were copied from previous compilation.
-    0 functions were new in current compilation
-    0 functions had inline decision re-evaluated but remain unchanged
+  75 of 693 functions (10.8%) were compiled, the rest were copied from previous compilation.
+    24 functions were new in current compilation
+    58 functions had inline decision re-evaluated but remain unchanged
   Finished generating code
+glew32s.lib(glew.obj) : warning LNK4099: PDB '' was not found with 'glew32s.lib(glew.obj)' or at ''; linking object as if no debug info
+LINK : warning LNK4286: symbol '__glewDeleteBuffers' defined in 'glew32s.lib(glew.obj)' is imported by 'IndexBuffer.obj'
+LINK : warning LNK4286: symbol '__glewGenBuffers' defined in 'glew32s.lib(glew.obj)' is imported by 'IndexBuffer.obj'
+LINK : warning LNK4286: symbol '__glewBufferData' defined in 'glew32s.lib(glew.obj)' is imported by 'IndexBuffer.obj'
+LINK : warning LNK4286: symbol '__glewBindBuffer' defined in 'glew32s.lib(glew.obj)' is imported by 'IndexBuffer.obj'
+LINK : warning LNK4286: symbol '__glewUniform4f' defined in 'glew32s.lib(glew.obj)' is imported by 'Shader.obj'
+LINK : warning LNK4286: symbol '__glewLinkProgram' defined in 'glew32s.lib(glew.obj)' is imported by 'Shader.obj'
+LINK : warning LNK4286: symbol '__glewDeleteShader' defined in 'glew32s.lib(glew.obj)' is imported by 'Shader.obj'
+LINK : warning LNK4286: symbol '__glewUniform3f' defined in 'glew32s.lib(glew.obj)' is imported by 'Shader.obj'
+LINK : warning LNK4286: symbol '__glewUniformMatrix4fv' defined in 'glew32s.lib(glew.obj)' is imported by 'Shader.obj'
+LINK : warning LNK4286: symbol '__glewShaderSource' defined in 'glew32s.lib(glew.obj)' is imported by 'Shader.obj'
+LINK : warning LNK4286: symbol '__glewDeleteProgram' defined in 'glew32s.lib(glew.obj)' is imported by 'Shader.obj'
+LINK : warning LNK4286: symbol '__glewAttachShader' defined in 'glew32s.lib(glew.obj)' is imported by 'Shader.obj'
+LINK : warning LNK4286: symbol '__glewGetUniformLocation' defined in 'glew32s.lib(glew.obj)' is imported by 'Shader.obj'
+LINK : warning LNK4286: symbol '__glewUniform1f' defined in 'glew32s.lib(glew.obj)' is imported by 'Shader.obj'
+LINK : warning LNK4286: symbol '__glewValidateProgram' defined in 'glew32s.lib(glew.obj)' is imported by 'Shader.obj'
+LINK : warning LNK4286: symbol '__glewGetShaderInfoLog' defined in 'glew32s.lib(glew.obj)' is imported by 'Shader.obj'
+LINK : warning LNK4286: symbol '__glewUniform1i' defined in 'glew32s.lib(glew.obj)' is imported by 'Shader.obj'
+LINK : warning LNK4286: symbol '__glewCreateProgram' defined in 'glew32s.lib(glew.obj)' is imported by 'Shader.obj'
+LINK : warning LNK4286: symbol '__glewCreateShader' defined in 'glew32s.lib(glew.obj)' is imported by 'Shader.obj'
+LINK : warning LNK4286: symbol '__glewCompileShader' defined in 'glew32s.lib(glew.obj)' is imported by 'Shader.obj'
+LINK : warning LNK4286: symbol '__glewGetShaderiv' defined in 'glew32s.lib(glew.obj)' is imported by 'Shader.obj'
+LINK : warning LNK4286: symbol '__glewUseProgram' defined in 'glew32s.lib(glew.obj)' is imported by 'Shader.obj'
+LINK : warning LNK4286: symbol '__glewUniformMatrix3fv' defined in 'glew32s.lib(glew.obj)' is imported by 'Shader.obj'
+LINK : warning LNK4286: symbol '__glewGenVertexArrays' defined in 'glew32s.lib(glew.obj)' is imported by 'VertexArray.obj'
+LINK : warning LNK4286: symbol '__glewDeleteVertexArrays' defined in 'glew32s.lib(glew.obj)' is imported by 'VertexArray.obj'
+LINK : warning LNK4286: symbol '__glewVertexAttribPointer' defined in 'glew32s.lib(glew.obj)' is imported by 'VertexArray.obj'
+LINK : warning LNK4286: symbol '__glewBindVertexArray' defined in 'glew32s.lib(glew.obj)' is imported by 'VertexArray.obj'
+LINK : warning LNK4286: symbol '__glewEnableVertexAttribArray' defined in 'glew32s.lib(glew.obj)' is imported by 'VertexArray.obj'
   ProjetoP3D.vcxproj -> C:\Users\danie\OneDrive\Documentos\IPCA\2º Ano\PROG 3D v2\Projeto\ProjetoP3D\x64\Release\ProjetoP3D.exe
