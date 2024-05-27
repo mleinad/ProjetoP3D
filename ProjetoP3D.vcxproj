@@ -136,6 +136,7 @@
     <ClCompile Include="Luis\VertexBuffer.cpp" />
     <ClCompile Include="Object3D.cpp" />
     <ClCompile Include="Source.cpp" />
+    <ClCompile Include="Texture.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="InputControls.h" />
@@ -148,6 +149,7 @@
     <ClInclude Include="Luis\VertexBufferLayout.h" />
     <ClInclude Include="Object3D.h" />
     <ClInclude Include="stb_image.h" />
+    <ClInclude Include="Texture.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\shader.frag" />

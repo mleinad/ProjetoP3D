@@ -4,9 +4,8 @@ Object3D::Object3D(const char* path)
 {
 	loadOBJ(path);
 
-
-	printf("%s\n", material.mtl_path);
-	//loadMTL(material.path.c_str());
+	std::string mp = "MTL/" + material.mtl_path;
+	loadMTL(mp.c_str());
 
 
 }
@@ -99,8 +98,8 @@ bool Object3D ::loadOBJ(const char* path){
 			fscanf(file, "%127s", temp_buffer);
 			std::string temp_mtl = temp_buffer;
 		
-			//material.texture = temp_mtl;
-			printf("temp_mtl : %s\n", material.texture);
+			material.mtl_path = temp_mtl;
+			printf("temp_mtl : %s\n",temp_mtl);
 		
 		}
 		else {

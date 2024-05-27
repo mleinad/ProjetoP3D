@@ -53,6 +53,8 @@ void scrollCallback(GLFWwindow* window, double xoffset, double yoffset) {
 void GLAPIENTRY MessageCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam) {
 	std::cout << "ERROR " << message;
 }
+void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
+
 
 void print_error(int error, const char* description);
 void load_textures(std::vector<std::string> textureFiles);
@@ -121,6 +123,8 @@ void draw(glm::mat4 projection, std::vector<glm::vec3> object, float& angle)
 }
 
 
+bool spot = true, point = true, dir = true, amb = true, material = true;
+
 int main() {
 
 
@@ -158,16 +162,10 @@ int main() {
 	glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GL_TRUE);
 	glEnable(GL_DEBUG_OUTPUT);
 	glDebugMessageCallback(MessageCallback, 0);
+	glfwSetKeyCallback(window, key_callback);
 
 
 	glfwSetScrollCallback(window, scrollCallback);
-
-
-	Object3D ball("OBJ files/Ball1.obj");
-
-	Object3D cube("OBJ files/cube.obj");
-
-	ball.loadMTL("Ball1.mtl");
 
 
 
@@ -262,8 +260,7 @@ int main() {
 	shader.SetUniformMat3f("NormalMatrix", NormalMatrix);
 	shader.SetUniformMat4f("Projection", projection);
 
-	int i = 1;
-	shader.SetUniform1i("sl", i);
+
 
 	SetUniforms(shader);
 
@@ -301,10 +298,32 @@ int main() {
 
 		//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 			
-
-
+		shader.SetUniform1i("spotLightOn", spot);
+		shader.SetUniform1i("pointLightOn", point);
+		shader.SetUniform1i("directionalLightOn", dir);
+		shader.SetUniform1i("ambientLightOn", amb);
 		
 		glm::vec3 translation;
+
+
+		if (material) {
+			shader.SetUniform3f("material.emissive", 0.0f, 0.0f, 0.0f);
+			shader.SetUniformVec3("material.ambient", models[i].material.ambient);
+			shader.SetUniformVec3("material.diffuse", models[i].material.difuse);
+			shader.SetUniformVec3("material.specular", models[i].material.specular);
+			shader.SetUniform1f("material.shininess", models[i].material.shininess);
+		}
+		else 
+		{
+			// Material properties
+			shader.SetUniform3f("material.emissive", 0.0f, 0.0f, 0.0f);
+			shader.SetUniform3f("material.ambient", 1.0f, 1.0f, 1.0f);
+			shader.SetUniform3f("material.diffuse", 1.0f, 1.0f, 1.0f);
+			shader.SetUniform3f("material.specular", 1.0f, 1.0f, 1.0f);
+			shader.SetUniform1f("material.shininess", 12.0f);
+		}
+
+
 
 		for (int i=0; i<3; i++)
 		{
@@ -320,6 +339,9 @@ int main() {
 			shader.SetUniformMat4f("ModelView", ModelView);
 			shader.SetUniformMat3f("NormalMatrix", NormalMatrix);
 		
+			
+
+
 			
 			buffer.Draw(VAOs[i], models[i].vertices.size(), shader);	
 
@@ -458,7 +480,7 @@ void load_textures(std::vector<std::string> textureFiles) {
 void SetUniforms(Shader shader) {
 
 	// Fonte de luz ambiente global
-	glm::vec3 amb (0.1f, 0.1f, 0.1f);
+	glm::vec3 amb (1.0f, 0.1f, 0.1f);
 	shader.SetUniformVec3("ambientLight.ambient", amb);
 
 	// Fonte de luz direcional
@@ -491,11 +513,33 @@ void SetUniforms(Shader shader) {
 	shader.SetUniform3f("spotLight.spotDirection", 0.0f, -1.0f, 0.0f);
 
 
-	// Material properties
-	shader.SetUniform3f("material.emissive", 0.0f, 0.0f, 0.0f);
-	shader.SetUniform3f("material.ambient", 1.0f, 1.0f, 1.0f);
-	shader.SetUniform3f("material.diffuse", 1.0f, 1.0f, 1.0f);
-	shader.SetUniform3f("material.specular", 1.0f, 1.0f, 1.0f);
-	shader.SetUniform1f("material.shininess", 12.0f);
 
 }
+
+
+
+
+
+void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
+{
+	if (key == GLFW_KEY_1 && action == GLFW_PRESS) 
+	{
+		amb = !amb;
+	}
+	if (key == GLFW_KEY_2 && action == GLFW_PRESS)
+	{
+		dir = !dir;
+	}
+	if (key == GLFW_KEY_3 && action == GLFW_PRESS)
+	{
+		point = !point;
+	}
+	if (key == GLFW_KEY_4 && action == GLFW_PRESS)
+	{
+		spot = !spot;
+	}
+	if (key == GLFW_KEY_M && action == GLFW_PRESS) {
+		material = !material;
+	}
+}
+

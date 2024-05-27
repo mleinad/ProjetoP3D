@@ -68,7 +68,7 @@ struct Material{
 uniform Material material;
 vec3 diffuseColor;
 
-uniform bool sl;
+uniform bool spotLightOn, pointLightOn, directionalLightOn, ambientLightOn;
 
 in vec3 vPositionEyeSpace;
 in vec3 vNormalEyeSpace;
@@ -90,19 +90,39 @@ void main()
 	vec4 light1, light2, light3;
 	vec4 ambientTemp;
 
-	ambient = calcAmbientLight(ambientLight);
-	light1 = calcDirectionalLight(directionalLight, ambientTemp);
-	
-	ambient += ambientTemp;
-
-	light2 = calcPointLight(pointLight, ambientTemp);
-	
-	ambient += ambientTemp;
-
-	if(sl)
+	if(ambientLightOn)
 	{
-	light3 = calcSpotLight(spotLight, ambientTemp);
-	ambient += ambientTemp;
+		ambient = calcAmbientLight(ambientLight);
+	}
+	else 
+	{
+		ambient = vec4(0,0,0,0);
+	}
+	
+	if(directionalLightOn)
+	{
+		light1 = calcDirectionalLight(directionalLight, ambientTemp);
+		ambient += ambientTemp;
+	}
+	else
+	{
+		light1= vec4(0,0,0,0);
+	}
+	
+	if(pointLightOn)
+	{
+		light2 = calcPointLight(pointLight, ambientTemp);
+		ambient += ambientTemp;
+	}
+	else
+	{
+		light2 = vec4(0,0,0,0);
+	}
+	
+	if(spotLightOn)
+	{
+		light3 = calcSpotLight(spotLight, ambientTemp);
+		ambient += ambientTemp;
 	}
 	else
 	{
