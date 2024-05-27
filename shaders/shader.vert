@@ -1,21 +1,22 @@
 #version 440 core
 
-in vec3 position;
-in vec3 normal;
+uniform mat4 Model;
+uniform mat4 View;
+uniform mat4 ModelView;		// View * Model
+uniform mat4 Projection;
+uniform mat3 NormalMatrix;
 
-
-out vec3 Normal;
-out vec3 FragPos;
-
-
-uniform mat4 u_MPV;
-
+in vec3 vPosition;			// Coordenadas locais do v�rtice
+in vec3 vNormal;			// Normal do v�rtice
+ 
+out vec3 vPositionEyeSpace;
+out vec3 vNormalEyeSpace;
 
 void main()
-{
-	gl_Position = u_MPV * vec4(position, 1.0f);
+{ 
+	vPositionEyeSpace = (ModelView * vec4(vPosition, 1.0)).xyz;
 
-	Normal = mat3(transpose(inverse(u_MPV))) * normal;
+	vNormalEyeSpace = normalize(NormalMatrix * vNormal);
 
-	FragPos = (u_MPV * vec4(position, 1.0f)).xyz;
-};
+	gl_Position = Projection * ModelView * vec4(vPosition, 1.0f);
+}

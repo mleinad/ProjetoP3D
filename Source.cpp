@@ -34,6 +34,7 @@ float angle = 0.0f;
 
 glm::mat3 NormalMatrix;
 
+void SetUniforms(Shader shader);
 
 void scrollCallback(GLFWwindow* window, double xoffset, double yoffset) {
 	//zoom in
@@ -243,28 +244,28 @@ int main() {
 	glm::mat4 model = glm::mat4(1.0f);
 	glm::mat4 mvp = projection * view * model;
 
+	glm::mat4 ModelView = view * model;
+	NormalMatrix = glm::inverseTranspose(glm::mat3(ModelView));
+
 
 	glm::vec3 white(1.0f, 1.0f, 1.0f);
 	float intensity = 0.0f;
 	glm::vec3 direction(2.0f, -1.0f, -2.0f);
-	Light light(white, intensity, direction, 1.0f);
 
 
 	shader.Bind(); 
 
 
-	shader.SetUniformMat4f("u_MPV", mvp);
-
-	shader.SetUniform4f("u_Color", 0.8f, 1.0f, 0.8f, 1.0f);
-
-	shader.SetUniform1f("material.specularIntensity", 1.0f);
-	shader.SetUniform1f("material.shininess", 32.0f);
-
-
-	int i = 0;
+	shader.SetUniformMat4f("Model", model);
+	shader.SetUniformMat4f("View", view);
+	shader.SetUniformMat4f("ModelView", ModelView);
+	shader.SetUniformMat3f("NormalMatrix", NormalMatrix);
+	shader.SetUniformMat4f("Projection", projection);
 
 
-	shader.Unbind();
+
+	SetUniforms(shader);
+
 
 	Buffer buffer;
 
@@ -277,7 +278,6 @@ int main() {
 	VBO_2.Unbind();
 	VBO_3.Unbind();
 
-	shader.Unbind();
 
 
 	glEnable(GL_DEPTH_TEST);
@@ -299,26 +299,30 @@ int main() {
 
 
 		//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+			
+
+
 		
+		glm::vec3 translation;
 
-			shader.Bind();
-			light.UseLight(shader);
+		for (int i=0; i<3; i++)
+		{
+	
+			
+		
+			translation = glm::vec3(offset[i], 0, 0);
+			model = glm::translate(glm::mat4(1.0f), translation);
+		
+			ModelView = view * model;
+			NormalMatrix = glm::inverseTranspose(glm::mat3(ModelView));
+			
+			shader.SetUniformMat4f("ModelView", ModelView);
+			shader.SetUniformMat3f("NormalMatrix", NormalMatrix);
+		
+			
+			buffer.Draw(VAOs[i], models[i].vertices.size(), shader);	
 
-			glm::vec3 translation;
-
-			for (int i=0; i<3; i++)
-			{
-				translation = glm::vec3(offset[i], 0, 0);
-
-				model = glm::translate(glm::mat4(1.0f), translation);
-				mvp = projection * view * model;
-				shader.SetUniformMat4f("u_MPV", mvp);
-				buffer.Draw(VAOs[i], models[i].vertices.size(), shader);
-			}
-
-
-
-
+		}
 
 
 		glfwSwapBuffers(window);
@@ -446,4 +450,37 @@ void load_textures(std::vector<std::string> textureFiles) {
 		}
 	}
 #endif
+}
+
+
+
+void SetUniforms(Shader shader) {
+
+	// Fonte de luz ambiente global
+	glm::vec3 amb (0.1f, 0.1f, 0.1f);
+	shader.SetUniformVec3("ambientLight.ambient", amb);
+
+	// Fonte de luz direcional
+	shader.SetUniform3f("directionalLight.direction", 1.0f, 0.0f, 0.0f);
+	shader.SetUniform3f("directionalLight.ambient", 0.2f, 0.2f, 0.2f);
+	shader.SetUniform3f("directionalLight.diffuse", 1.0f, 1.0f, 1.0f);
+	shader.SetUniform3f("directionalLight.specular", 1.0f, 1.0f, 1.0f);
+
+	// Fonte de luz pontual #1
+	shader.SetUniform3f("pointLight.position", 0.0f, 0.0f, 5.0f);
+	shader.SetUniform3f("pointLight.ambient", 0.1f, 0.1f, 0.1f);
+	shader.SetUniform3f("pointLight.diffuse", 1.0f, 1.0f, 1.0f);
+	shader.SetUniform3f("pointLight.specular", 1.0f, 1.0f, 1.0f);
+	shader.SetUniform1f("pointLight.constant", 1.0f);
+	shader.SetUniform1f("pointLight.linear", 0.06f);
+	shader.SetUniform1f("pointLight.quadratic", 0.02f);
+
+
+	// Material properties
+	shader.SetUniform3f("material.emissive", 0.0f, 0.0f, 0.0f);
+	shader.SetUniform3f("material.ambient", 1.0f, 1.0f, 1.0f);
+	shader.SetUniform3f("material.diffuse", 1.0f, 1.0f, 1.0f);
+	shader.SetUniform3f("material.specular", 1.0f, 1.0f, 1.0f);
+	shader.SetUniform1f("material.shininess", 12.0f);
+
 }

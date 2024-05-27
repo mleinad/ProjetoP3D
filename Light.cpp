@@ -33,10 +33,5 @@ void Light::UseLight(Shader shader)
 	shader.SetUniform1f("directionalLight.diffuseIntensity", diffuseIntesity);
 }
 
-void Light::UpdateRotation(float angle)
-{
-	direction.y = angle;
-
-}
 
 
