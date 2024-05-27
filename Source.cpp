@@ -138,7 +138,7 @@ int main() {
 	const GLFWvidmode* videoMode = glfwGetVideoMode(monitor);
 
 
-	window = glfwCreateWindow(800, 600, "P3D - Trabalho Pratico 1 (Part #1)", nullptr, NULL);
+	window = glfwCreateWindow(1600, 900, "P3D - Trabalho Pratico 1 (Part #1)", nullptr, NULL);
 	if (window == NULL) {
 		glfwTerminate();
 		return -1;
@@ -170,14 +170,59 @@ int main() {
 
 
 
+	Shader shader("shaders/shader.frag", "shaders/shader.vert");
 
-	Object3D models[15];
-	for (int i = 0; i < 15; ++i){
+
+
+	std::vector<Object3D> models;
+//	std::vector<VertexBuffer> VBOs;
+
+	VertexArray VAOs[3];
+
+	for (int i = 0; i < 3; i++) {
 
 		std::string fileName = "OBJ files/Ball" + std::to_string(i + 1) + ".obj";
-		models[i].loadOBJ(fileName.c_str());
+		
+		Object3D model(fileName.c_str());
+		models.push_back(model);
 
 	}
+
+		VertexBufferLayout layout_v;
+
+		layout_v.Push<glm::vec3>(1);
+		layout_v.Push<glm::vec3>(1);
+
+
+
+		VertexBuffer VBO_1(&models[0].mesh[0], models[0].mesh.size() * sizeof(glm::vec3));
+		//VBOs.push_back(VBO_1);
+
+		VertexBuffer VBO_2(&models[1].mesh[0], models[1].mesh.size() * sizeof(glm::vec3));
+		//VBOs.push_back(VBO_2);
+
+		VertexBuffer VBO_3(&models[2].mesh[0], models[2].mesh.size() * sizeof(glm::vec3));
+		//VBOs.push_back(VBO_3);
+
+
+		VAOs[0].AddBuffer(VBO_1, layout_v);
+		
+		VAOs[1].AddBuffer(VBO_2, layout_v);
+		
+		VAOs[2].AddBuffer(VBO_3, layout_v);
+
+		
+		VAOs[0].Bind();
+
+		shader.Bind();
+
+		VAOs[1].Bind();
+
+		shader.Bind();
+
+		VAOs[2].Bind();
+
+		shader.Bind();
 
 
 
@@ -187,7 +232,7 @@ int main() {
 	//object.printInfo();
 
 
-	glm::mat4 projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 1000.f);
+	glm::mat4 projection = glm::perspective(glm::radians(45.0f), 16.0f / 9.0f, 0.1f, 1000.f);
 
 	glm::mat4 view = glm::lookAt(
 		glm::vec3(0.0f, 0.0f, ZOOM),	// Posição da câmara no mundo
@@ -204,70 +249,41 @@ int main() {
 	glm::vec3 direction(2.0f, -1.0f, -2.0f);
 	Light light(white, intensity, direction, 1.0f);
 
-	VertexArray VAO[2];
-
-
-	//ou object.vertices.data() 
-	VertexBuffer VBO(&ball.mesh[0], ball.mesh.size() * sizeof(glm::vec3));
-
-	VertexBuffer VBO_2(&cube.mesh[0], cube.mesh.size() * sizeof(glm::vec3));
-
-	VertexBufferLayout layout_v;
-
-
-
-
-	layout_v.Push<glm::vec3>(1);
-	layout_v.Push<glm::vec3>(1);
-
-
-	VAO[0].AddBuffer(VBO, layout_v);
-	
-	//VAO_1.AddBuffer(VBO_2, layout_v);
-	VAO[1].AddBuffer(VBO_2, layout_v);
-
-
-
-	VAO[0].Bind();
-
-
-
-	Shader shader("shaders/shader.frag", "shaders/shader.vert");
 
 	shader.Bind(); 
-
-
-
-	VAO[1].Bind();
-	shader.Bind();
 
 
 	shader.SetUniformMat4f("u_MPV", mvp);
 
 	shader.SetUniform4f("u_Color", 0.8f, 1.0f, 0.8f, 1.0f);
 
-	shader.SetUniform1f("material.specularIntensity", 0.5f);
+	shader.SetUniform1f("material.specularIntensity", 1.0f);
 	shader.SetUniform1f("material.shininess", 32.0f);
 
 
+	int i = 0;
 
-	VAO[0].Unbind();
-	VAO[1].Unbind();
-	VBO.Unbind();
-	VBO_2.Unbind();
+
 	shader.Unbind();
 
 	Buffer buffer;
 
+	for (int i = 0; i < 3; i++)
+	{
+		VAOs[i].Unbind();
+	}
 
+	VBO_1.Unbind();
+	VBO_2.Unbind();
+	VBO_3.Unbind();
 
+	shader.Unbind();
 
 
 	glEnable(GL_DEPTH_TEST);
 
 	glm::vec3 world_position(0.0f, 0.0f, 0.0f);
-	glm::vec3 translationA(3.0f, 0.0f, 0.0f);
-	glm::vec3 translationB(-3.0f, 0.0f, 0.0f);
+	float offset[3] = {-3.0f, 0.0f, 3.0f};
 
 	while (!glfwWindowShouldClose(window))
 	{
@@ -289,18 +305,16 @@ int main() {
 			light.UseLight(shader);
 
 			glm::vec3 translation;
-			for (int i=0; i<2; i++)
+
+			for (int i=0; i<3; i++)
 			{
-				if (i == 0) translation = translationA;
-				else translation = translationB;
+				translation = glm::vec3(offset[i], 0, 0);
 
 				model = glm::translate(glm::mat4(1.0f), translation);
 				mvp = projection * view * model;
 				shader.SetUniformMat4f("u_MPV", mvp);
-				buffer.Draw(VAO[i], ball.vertices.size(), shader);
+				buffer.Draw(VAOs[i], models[i].vertices.size(), shader);
 			}
-		
-
 
 
 
