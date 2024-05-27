@@ -262,7 +262,8 @@ int main() {
 	shader.SetUniformMat3f("NormalMatrix", NormalMatrix);
 	shader.SetUniformMat4f("Projection", projection);
 
-
+	int i = 1;
+	shader.SetUniform1i("sl", i);
 
 	SetUniforms(shader);
 
@@ -474,6 +475,20 @@ void SetUniforms(Shader shader) {
 	shader.SetUniform1f("pointLight.constant", 1.0f);
 	shader.SetUniform1f("pointLight.linear", 0.06f);
 	shader.SetUniform1f("pointLight.quadratic", 0.02f);
+
+
+	//Fonte de luz holofote 
+	shader.SetUniform3f("spotLight.position", 0.0, 10.0f, 0.0f);
+	shader.SetUniform3f("spotLight.ambient", 0.1f, 0.1f, 0.1f);
+	shader.SetUniform3f("spotLight.diffuse", 1.0f, 1.0f, 1.0f);
+	shader.SetUniform3f("spotLight.specular", 1.0f, 1.0f, 1.0f);
+	shader.SetUniform1f("spotLight.constant", 1.0f);
+	shader.SetUniform1f("spotLight.linear", 0.045f);
+	shader.SetUniform1f("spotLight.quadratic", 0.0075f);
+
+	shader.SetUniform1f("spotLight.spotCutoff", cos(glm::radians(10.5f)));
+	shader.SetUniform1f("spotLight.spotExponent", cos(glm::radians(12.0f)));
+	shader.SetUniform3f("spotLight.spotDirection", 0.0f, -1.0f, 0.0f);
 
 
 	// Material properties

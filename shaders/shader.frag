@@ -68,6 +68,7 @@ struct Material{
 uniform Material material;
 vec3 diffuseColor;
 
+uniform bool sl;
 
 in vec3 vPositionEyeSpace;
 in vec3 vNormalEyeSpace;
@@ -98,9 +99,15 @@ void main()
 	
 	ambient += ambientTemp;
 
+	if(sl)
+	{
 	light3 = calcSpotLight(spotLight, ambientTemp);
 	ambient += ambientTemp;
-
+	}
+	else
+	{
+		light3 = vec4(0,0,0,0);
+	}
 
 	color = emissive + (ambient/4) + light1 + light2 +light3;
 }
@@ -153,10 +160,34 @@ vec4 calcPointLight(PointLight light, out vec4 ambient){
 	return (attenuation * (diffuse + specular));
 }
 
+
 vec4 calcSpotLight(SpotLight light, out vec4 ambient) 
 {
+    ambient = vec4(material.ambient * light.ambient, 1.0);
 
+    vec3 lightPositionEyeSpace = (View * vec4(light.position, 1.0)).xyz;
+    vec3 spotDirectionEyeSpace = normalize((View * vec4(light.spotDirection, 0.0)).xyz);
 
-	
-	return vec4(0.0);
+    vec3 L = normalize(lightPositionEyeSpace - vPositionEyeSpace);
+    vec3 N = normalize(vNormalEyeSpace);
+
+    float theta = dot(L, -spotDirectionEyeSpace);
+    float epsilon = light.spotCutoff - light.spotExponent;
+    float intensity = clamp((theta - light.spotExponent) / epsilon, 0.0, 1.0);
+
+    float NdotL = max(dot(N, L), 0.0);
+    vec4 diffuse = vec4(diffuseColor * light.diffuse, 1.0) * NdotL;
+
+    vec3 V = normalize(-vPositionEyeSpace);
+    vec3 R = reflect(-L, N);
+    float RdotV = max(dot(R, V), 0.0);
+    vec4 specular = pow(RdotV, material.shininess) * vec4(light.specular * material.specular, 1.0);
+
+    float dist = length(lightPositionEyeSpace - vPositionEyeSpace);
+    float attenuation = 1.0 / (light.constant + light.linear * dist + light.quadratic * (dist * dist));
+
+    diffuse *= intensity;
+    specular *= intensity;
+
+    return attenuation * (diffuse + specular);
 }
