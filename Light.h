@@ -7,60 +7,47 @@ class Light
 {
 public:
 	Light();
-	Light(float red, float green, float blue, float aIntensity,
-		float Xdir, float yDir,float zDir, float dIntensity);
-	Light(glm::vec3 _color, float aIntensity, glm::vec3 _direction, float dIntensity);
 
-	void UseLight(Shader shader);
+	virtual void UseLight(Shader shader);
 
-private:
-	glm::vec3 color;
-	float ambientIntesity;
-
-	glm::vec3 direction;
-	float diffuseIntesity;
-
-};
-
-
-class AmbientLight: Light {
-
-public:
-	AmbientLight();
-
-	void UseLight(Shader shader);
-private:
-	
-	glm::vec3 ambient;
-};
-
-
-class DirectionalLight : Light {
-public:
-	DirectionalLight();
-
-
-	void UseLight(Shader shader);
-private:
-	glm::vec3 direction;	
-
-	glm::vec3 ambient;		
-	glm::vec3 diffuse;		
-	glm::vec3 specular;
-};
-
-
-class PointLight :Light {
-public:
-	PointLight();
-
-	void UseLight(Shader shader);
-private:
-	glm::vec3 position;
+protected:
 
 	glm::vec3 ambient;
 	glm::vec3 diffuse;
 	glm::vec3 specular;
+};
+
+
+class AmbientLight:public Light {
+
+public:
+	AmbientLight(glm::vec3 ambient);
+
+	void UseLight(Shader shader);
+private:
+};
+
+
+class DirectionalLight :public Light {
+public:
+	DirectionalLight(glm::vec3 _ambient, glm::vec3 _diffuse,
+		glm::vec3 _specular, glm::vec3 _direction);
+
+	void UseLight(Shader shader);
+private:
+	glm::vec3 direction;	
+};
+
+
+class PointLight : public Light {
+public:
+	PointLight(glm::vec3 _ambient, glm::vec3 _diffuse,
+		glm::vec3 _specular, glm::vec3 _position,
+		float _constant, float _linear, float _quadratic);
+
+	void UseLight(Shader shader);
+private:
+	glm::vec3 position;
 
 	float constant;
 	float linear;
@@ -68,18 +55,18 @@ private:
 
 };
 
-class SpotLight :Light {
+class SpotLight :public Light {
 public:
-	SpotLight();
+	SpotLight(glm::vec3 _ambient, glm::vec3 _diffuse,
+		glm::vec3 _specular, glm::vec3 _position, glm::vec3 spotDirection,
+		float _constant, float _linear, float _quadratic, float _spotCutOff,
+		float _spotExponent);
 	
 
 	void UseLight(Shader shader);
+
 private:
 	glm::vec3 position;		
-
-	glm::vec3 ambient;		
-	glm::vec3 diffuse;		
-	glm::vec3 specular;		
 
 	float constant;		
 	float linear;		

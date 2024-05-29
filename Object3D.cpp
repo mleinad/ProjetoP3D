@@ -23,6 +23,34 @@ Object3D::~Object3D()
 
 }
 
+int Object3D::getVertexCount()
+{
+	return meshVector.size();
+}
+
+glm::vec3 Object3D::FindCenter()
+{
+	int numVertices = meshStruct.size();
+
+		double sumX = 0.0, sumY = 0.0, sumZ = 0.0;
+
+		for (int i = 0; i > numVertices; i++) {
+			sumX += meshStruct[i].vertices.x;
+			sumY += meshStruct[i].vertices.y;
+			sumZ += meshStruct[i].vertices.z;
+		}
+		glm::vec3 centroid;
+
+		centroid.x = sumX / numVertices;
+		centroid.y = sumY / numVertices;
+		centroid.z = sumZ / numVertices;
+		float raio = glm::distance(centroid, meshStruct[0].vertices);
+
+		printf("\ncentroid: %f, %f, %f", centroid.x, centroid.y, centroid.z);
+		printf("\n r: %f", raio);
+	return centroid;
+}
+
 bool Object3D ::loadOBJ(const char* path){
 	
 	std::vector< unsigned int > vertexIndices, uvIndices, normalIndices;
@@ -111,22 +139,25 @@ bool Object3D ::loadOBJ(const char* path){
 	
 	for (unsigned int i = 0; i < vertexIndices.size(); i++) {
 
+		Mesh tempMesh;
+
 		unsigned int vertexIndex = vertexIndices[i];
 		unsigned int uvIndex = uvIndices[i];
 		unsigned int normalIndex = normalIndices[i];
 
-		glm::vec3 vertex = temp_vertices[vertexIndex-1];
+		glm::vec3 vertex = temp_vertices[vertexIndex - 1];
 		glm::vec2 uv = temp_uvs[uvIndex - 1];
 		glm::vec3 normal = temp_normals[normalIndex - 1];
 
+		tempMesh.vertices = vertex;
+		tempMesh.normals = normal;
+		tempMesh.uvs = uv;
 
-		this->mesh.push_back(vertex);
-		this->mesh.push_back(normal);
-		 
-		this->vertices.push_back(vertex);
-		this->uvs.push_back(uv);
-		this->normals.push_back(normal);
+		meshVector.push_back(vertex);
+		meshVector.push_back(normal);
+		meshVector.push_back(glm::vec3(uv.x, uv.y, 0.0f));
 
+		meshStruct.push_back(tempMesh);
 	}
 	fclose(file);
 
@@ -203,25 +234,26 @@ bool Object3D::loadMTL(const char* path)
 
 void Object3D::printInfo(int numLines) {
 	// Print vertices
-	std::cout << "Vertices:" << std::endl;
-	for (int i = 0; i < vertices.size() && (numLines == -1 || i < numLines); ++i) {
-		const auto& vertex = vertices[i];
-		std::cout << "  (" << vertex.x << ", " << vertex.y << ", " << vertex.z << ")" << std::endl;
-	}
+	//
+	//std::cout << "Vertices:" << std::endl;
+	//for (int i = 0; i < mesh.vertices.size() && (numLines == -1 || i < numLines); ++i) {
+	//	const auto& vertex = vertices[i];
+	//	std::cout << "  (" << vertex.x << ", " << vertex.y << ", " << vertex.z << ")" << std::endl;
+	//}
 
-	// Print texture coordinates (UVs)
-	std::cout << "UVs:" << std::endl;
-	for (int i = 0; i < uvs.size() && (numLines == -1 || i < numLines); ++i) {
-		const auto& uv = uvs[i];
-		std::cout << "  (" << uv.x << ", " << uv.y << ")" << std::endl;
-	}
+	//// Print texture coordinates (UVs)
+	//std::cout << "UVs:" << std::endl;
+	//for (int i = 0; i < uvs.size() && (numLines == -1 || i < numLines); ++i) {
+	//	const auto& uv = uvs[i];
+	//	std::cout << "  (" << uv.x << ", " << uv.y << ")" << std::endl;
+	//}
 
-	// Print normals
-	std::cout << "Normals:" << std::endl;
-	for (int i = 0; i < normals.size() && (numLines == -1 || i < numLines); ++i) {
-		const auto& normal = normals[i];
-		std::cout << "  (" << normal.x << ", " << normal.y << ", " << normal.z << ")" << std::endl;
-	}
+	//// Print normals
+	//std::cout << "Normals:" << std::endl;
+	//for (int i = 0; i < normals.size() && (numLines == -1 || i < numLines); ++i) {
+	//	const auto& normal = normals[i];
+	//	std::cout << "  (" << normal.x << ", " << normal.y << ", " << normal.z << ")" << std::endl;
+	//}
 
 }
 

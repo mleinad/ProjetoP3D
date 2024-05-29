@@ -5,6 +5,8 @@
 #include<assert.h>
 #include <stdexcept>
 #include<GL/glew.h>
+
+
 struct VertexBufferElement {
 	unsigned int type;
 	unsigned int count;
@@ -15,6 +17,7 @@ struct VertexBufferElement {
 		case GL_FLOAT: return 4;
 		case GL_UNSIGNED_INT: return 4;
 		case GL_UNSIGNED_BYTE: return 1;
+		case GL_FLOAT_VEC3: return 12;
 		}
 		ASSERT(false);
 		return 0;
@@ -61,14 +64,21 @@ public:
 
 	template<>
 	void Push<glm::vec3>(unsigned int count) {
-		m_Elements.push_back(VertexBufferElement({ GL_FLOAT, count*3, GL_TRUE }));
+		m_Elements.push_back(VertexBufferElement({ GL_FLOAT, count * 3, GL_TRUE }));
 		m_Stride += (count*3) * VertexBufferElement::GetSizeOfType(GL_FLOAT);
 	}
-	
+
+	template<>
+	void Push<glm::vec2>(unsigned int count) {		//GL_FLOAT_VEC3 ->  GL_HALF_FLOAT_OES <type> requires extension ARB_ES2_compatibility
+		m_Elements.push_back(VertexBufferElement({ GL_FLOAT, count * 2, GL_TRUE }));
+		m_Stride += (count*2) * VertexBufferElement::GetSizeOfType(GL_FLOAT);
+	}
+
+
+	//void Push<Mesh>(unsigned int count) 
+
 	inline const std::vector<VertexBufferElement> GetElements() const& { return m_Elements; }
 	inline unsigned int GetStride() const { return m_Stride; }
-
-
 
 
 };

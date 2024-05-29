@@ -19,6 +19,7 @@
 #include "Luis/VertexBuffer.h"
 #include "Luis/VertexBufferLayout.h"
 #include "Luis/Shader.h"
+#include "Mesh.h"
 
 
 struct Material
@@ -44,24 +45,23 @@ public:
     Object3D(const char* path);
     ~Object3D();
 
-    bool loadOBJ(const char* path);
-   
+    int getVertexCount();
     
-    bool loadMTL(const char* path);
     void printInfo(int numLines = -1); // Default to -1, imprime todas as linhas
 
-    //output 
-    std::vector<glm::vec3> vertices;
-    std::vector<glm::vec2> uvs;
-    std::vector<glm::vec3> normals;
+    //nao utilizado 
+    std::vector<Mesh> meshStruct;
 
-    std::vector<glm::vec3> mesh;
+    std::vector<glm::vec3>meshVector;
 
-    
     Material material;
 
+    glm::vec3 FindCenter();
 
 private:
+
+    bool loadOBJ(const char* path);
+    bool loadMTL(const char* path);
 
 };
 

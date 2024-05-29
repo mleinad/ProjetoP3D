@@ -135,10 +135,12 @@
     <ClCompile Include="Luis\VertexArray.cpp" />
     <ClCompile Include="Luis\VertexBuffer.cpp" />
     <ClCompile Include="Object3D.cpp" />
+    <ClCompile Include="Physics.cpp" />
     <ClCompile Include="Source.cpp" />
     <ClCompile Include="Texture.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Mesh.h" />
     <ClInclude Include="InputControls.h" />
     <ClInclude Include="Light.h" />
     <ClInclude Include="Luis\IndexBuffer.h" />
@@ -148,6 +150,7 @@
     <ClInclude Include="Luis\VertexBuffer.h" />
     <ClInclude Include="Luis\VertexBufferLayout.h" />
     <ClInclude Include="Object3D.h" />
+    <ClInclude Include="Phsysics.h" />
     <ClInclude Include="stb_image.h" />
     <ClInclude Include="Texture.h" />
   </ItemGroup>

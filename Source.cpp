@@ -23,6 +23,7 @@
 #include <glm/gtc/matrix_inverse.hpp>
 #include <thread>
 #include "Light.h"
+#include "Texture.h"
 
 extern "C"
 {
@@ -50,6 +51,8 @@ void scrollCallback(GLFWwindow* window, double xoffset, double yoffset) {
 	}
 
 }
+
+
 void GLAPIENTRY MessageCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam) {
 	std::cout << "ERROR " << message;
 }
@@ -57,7 +60,6 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 
 
 void print_error(int error, const char* description);
-void load_textures(std::vector<std::string> textureFiles);
 
 void display(std::vector<glm::vec3> obj, glm::mat4 mvp) {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -125,6 +127,7 @@ void draw(glm::mat4 projection, std::vector<glm::vec3> object, float& angle)
 
 bool spot = true, point = true, dir = true, amb = true, material = true;
 
+
 int main() {
 
 
@@ -139,11 +142,13 @@ int main() {
 
 
 
+
+
 	GLFWmonitor* monitor = glfwGetPrimaryMonitor();
 	const GLFWvidmode* videoMode = glfwGetVideoMode(monitor);
 
 
-	window = glfwCreateWindow(1600, 900, "P3D - Trabalho Pratico 1 (Part #1)", nullptr, NULL);
+	window = glfwCreateWindow(videoMode->width, videoMode->height, "P3D - Trabalho Pratico 1 (Part #1)", nullptr, NULL);
 	if (window == NULL) {
 		glfwTerminate();
 		return -1;
@@ -169,69 +174,43 @@ int main() {
 
 
 
+	const int MODEL_COUNT=5;
+
 	Shader shader("shaders/shader.frag", "shaders/shader.vert");
 
 
+		VertexBufferLayout layout_v;
+
+		layout_v.Push<glm::vec3>(1); //vertices
+		layout_v.Push<glm::vec3>(1); //normais
+		layout_v.Push<glm::vec3>(1); //UVs
+
 
 	std::vector<Object3D> models;
-//	std::vector<VertexBuffer> VBOs;
+	VertexBuffer VBOs[MODEL_COUNT];
+	VertexArray VAOs[MODEL_COUNT];
 
-	VertexArray VAOs[3];
-
-	for (int i = 0; i < 3; i++) {
+	for (int i = 0; i < MODEL_COUNT; i++) {
 
 		std::string fileName = "OBJ files/Ball" + std::to_string(i + 1) + ".obj";
 		
+
 		Object3D model(fileName.c_str());
+
 		models.push_back(model);
 
+		VBOs[i].LateInit(&model.meshVector[0], models[0].meshVector.size() * sizeof(glm::vec3));
+
+		VAOs[i].AddBuffer(VBOs[i], layout_v);
+
+		VAOs[i].Bind();
+
+		shader.Bind();
 	}
 
-		VertexBufferLayout layout_v;
-
-		layout_v.Push<glm::vec3>(1);
-		layout_v.Push<glm::vec3>(1);
 
 
-
-		VertexBuffer VBO_1(&models[0].mesh[0], models[0].mesh.size() * sizeof(glm::vec3));
-		//VBOs.push_back(VBO_1);
-
-		VertexBuffer VBO_2(&models[1].mesh[0], models[1].mesh.size() * sizeof(glm::vec3));
-		//VBOs.push_back(VBO_2);
-
-		VertexBuffer VBO_3(&models[2].mesh[0], models[2].mesh.size() * sizeof(glm::vec3));
-		//VBOs.push_back(VBO_3);
-
-
-		VAOs[0].AddBuffer(VBO_1, layout_v);
-		
-		VAOs[1].AddBuffer(VBO_2, layout_v);
-		
-		VAOs[2].AddBuffer(VBO_3, layout_v);
-
-		
-		VAOs[0].Bind();
-
-		shader.Bind();
-
-		VAOs[1].Bind();
-
-		shader.Bind();
-
-		VAOs[2].Bind();
-
-		shader.Bind();
-
-
-
-
-
-
-	//object.printInfo();
-
-
-	glm::mat4 projection = glm::perspective(glm::radians(45.0f), 16.0f / 9.0f, 0.1f, 1000.f);
+	glm::mat4 projection = glm::perspective(glm::radians(45.0f),(float)videoMode->width/(float)videoMode->height, 0.1f, 1000.f);
 
 	glm::mat4 view = glm::lookAt(
 		glm::vec3(0.0f, 0.0f, ZOOM),	// Posição da câmara no mundo
@@ -249,9 +228,16 @@ int main() {
 	glm::vec3 white(1.0f, 1.0f, 1.0f);
 	float intensity = 0.0f;
 	glm::vec3 direction(2.0f, -1.0f, -2.0f);
-
+	
 
 	shader.Bind(); 
+
+	std::string image_path = "Texture/PoolBalluv1.jpg";
+	Texture texture(image_path);
+	texture.Bind();
+
+
+	shader.SetUniform1i("Texture", 0);
 
 
 	shader.SetUniformMat4f("Model", model);
@@ -262,26 +248,77 @@ int main() {
 
 
 
-	SetUniforms(shader);
-
-
 	Buffer buffer;
 
-	for (int i = 0; i < 3; i++)
+	for (int i = 0; i < MODEL_COUNT; i++)
 	{
 		VAOs[i].Unbind();
+		VBOs[i].Unbind();
 	}
 
-	VBO_1.Unbind();
-	VBO_2.Unbind();
-	VBO_3.Unbind();
+
+	Light *light_Ptr[4];
+
+	AmbientLight ambientLight(glm::vec3(0.1f, 0.1f, 0.1f));
+	
+	DirectionalLight directionLight(
+		glm::vec3(0.2f, 0.2f, 0.2f),//ambiente
+		glm::vec3(1.0f, 1.0f, 1.0f),//diffuse
+		glm::vec3(1.0f, 1.0f, 1.0f), //specular
+		glm::vec3(0.0f, 0.0f, 0.0f));//direction
+
+	SpotLight spotLight(
+		glm::vec3(0.1f, 0.1f, 0.1f),//ambiente
+		glm::vec3(1.0f, 1.0f, 1.0f),//diffuse
+		glm::vec3(1.0f, 1.0f, 1.0f),//specular
+		glm::vec3(0.0, 10.0f, 0.0f),//position
+		glm::vec3(0.0f, -1.0f, 0.0f),//direction
+		1.0f,	//constant
+		0.045f,	//linear
+		0.0075f,//quadratic
+		10.5f,	//spout cut off
+		12.0f);	//spot exponent
+	
+	PointLight pointLight(
+		glm::vec3(0.1f, 0.1f, 0.1f),//ambiente
+		glm::vec3(1.0f, 1.0f, 1.0f),//diffuse
+		glm::vec3(1.0f, 1.0f, 1.0f),//specular
+		glm::vec3(0.0f, 0.0f, 5.0f),//position
+		1.0f,	//constant
+		0.045f,	//linear
+		0.0075f//quadratic
+		);
 
 
+	light_Ptr[0] = &ambientLight;
+	light_Ptr[1] = &directionLight;
+	light_Ptr[2] = &spotLight;
+	light_Ptr[3] = &pointLight;
+
+
+	/*for (int i=0; i < 4; i++) {
+	
+		light_Ptr[i]->UseLight(shader);
+	
+	}*/
+
+	SetUniforms(shader);
 
 	glEnable(GL_DEPTH_TEST);
 
 	glm::vec3 world_position(0.0f, 0.0f, 0.0f);
-	float offset[3] = {-3.0f, 0.0f, 3.0f};
+	float offset[5] = {-5.0f, -2.0f, 0.0f, 2.0f, 5.0f};
+	
+
+	std::vector<glm::vec3> centers;
+
+	for (int i = 0; i < MODEL_COUNT; i++) {
+	
+		centers.push_back(models[i].FindCenter());
+	
+	}
+	
+	int j = 0;
 
 	while (!glfwWindowShouldClose(window))
 	{
@@ -302,35 +339,20 @@ int main() {
 		shader.SetUniform1i("pointLightOn", point);
 		shader.SetUniform1i("directionalLightOn", dir);
 		shader.SetUniform1i("ambientLightOn", amb);
+
 		
 		glm::vec3 translation;
 
 
-		if (material) {
-			shader.SetUniform3f("material.emissive", 0.0f, 0.0f, 0.0f);
-			shader.SetUniformVec3("material.ambient", models[i].material.ambient);
-			shader.SetUniformVec3("material.diffuse", models[i].material.difuse);
-			shader.SetUniformVec3("material.specular", models[i].material.specular);
-			shader.SetUniform1f("material.shininess", models[i].material.shininess);
-		}
-		else 
-		{
-			// Material properties
-			shader.SetUniform3f("material.emissive", 0.0f, 0.0f, 0.0f);
-			shader.SetUniform3f("material.ambient", 1.0f, 1.0f, 1.0f);
-			shader.SetUniform3f("material.diffuse", 1.0f, 1.0f, 1.0f);
-			shader.SetUniform3f("material.specular", 1.0f, 1.0f, 1.0f);
-			shader.SetUniform1f("material.shininess", 12.0f);
-		}
 
 
-
-		for (int i=0; i<3; i++)
+		for (int i=0; i<MODEL_COUNT; i++)
 		{
 	
 			
 		
 			translation = glm::vec3(offset[i], 0, 0);
+
 			model = glm::translate(glm::mat4(1.0f), translation);
 		
 			ModelView = view * model;
@@ -341,10 +363,28 @@ int main() {
 		
 			
 
-
+			if (material)
+			{
+				shader.SetUniform3f("material.emissive", 0.0f, 0.0f, 0.0f);
+				shader.SetUniformVec3("material.ambient", models[i].material.ambient);
+				shader.SetUniformVec3("material.diffuse", models[i].material.difuse);
+				shader.SetUniformVec3("material.specular", models[i].material.specular);
+				shader.SetUniform1f("material.shininess", models[i].material.shininess);
+			}
+			else 
+			{
+				// Material properties
+				shader.SetUniform3f("material.emissive", 0.0f, 0.0f, 0.0f);
+				shader.SetUniform3f("material.ambient", 1.0f, 1.0f, 1.0f);
+				shader.SetUniform3f("material.diffuse", 1.0f, 1.0f, 1.0f);
+				shader.SetUniform3f("material.specular", 1.0f, 1.0f, 1.0f);
+				shader.SetUniform1f("material.shininess", 12.0f);
+			}
 			
-			buffer.Draw(VAOs[i], models[i].vertices.size(), shader);	
+				glm::vec3 newCenter = glm::vec3(ModelView * glm::vec4(centers[i], 1.0f));
+				printf("\nball %d -> center: (%f,%f,%f)\n", i, newCenter.x, newCenter.y, newCenter.z);
 
+				buffer.Draw(VAOs[i], models[i].getVertexCount(), shader);
 		}
 
 
@@ -363,128 +403,14 @@ void print_error(int error, const char* description) {
 
 
 
-void load_textures(std::vector<std::string> textureFiles) {
-
-	GLuint textureName = 0;
-
-	// Gera um nome de textura
-	glGenTextures(1, &textureName);
-
-	// Ativa a Unidade de Textura #0
-	// A Unidade de Textura 0 está ativa por defeito.
-	// Só uma Unidade de Textura pode estar ativa.
-	glActiveTexture(GL_TEXTURE0);
-
-	// Vincula esse nome de textura ao target GL_TEXTURE_CUBE_MAP da Unidade de Textura ativa.
-	glBindTexture(GL_TEXTURE_CUBE_MAP, textureName);
-
-	// NOTA:
-	// Num cube map de texturas, todas as texturas devem:
-	// - ter a mesma resolução;
-	// - possuir o mesmo número de níveis de mipmap; e,
-	// - partilhar os mesmos parâmetros.
-
-	// Define os parâmetros de filtragem (wrapping e ajuste de tamanho)
-	// para a textura que está vinculada ao target GL_TEXTURE_CUBE_MAP da Unidade de Textura ativa.
-	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-
-#ifdef _D_STORAGE
-	// Aloca memória para o cube map de texturas
-	// Textura imutável, i.e., apenas é possível alterar a imagem.
-	{
-		// Leitura da resolução e número de canais da imagem.
-		int width, height, nChannels;
-		// Ativa a inversão vertical da imagem, aquando da sua leitura para memória.
-		stbi_set_flip_vertically_on_load(true);
-		unsigned char* imageData = stbi_load(textureFiles[0].c_str(), &width, &height, &nChannels, 0);
-		if (imageData) {
-			stbi_image_free(imageData);
-
-			// Alocação de memória
-			glTexStorage2D(GL_TEXTURE_CUBE_MAP,
-				1,					// Número de níveis de Mipmap para as texturas. 1 se não forem utilizados Mipmaps.
-				nChannels == 4 ? GL_RGBA8 : GL_RGB8,	// Formato interno da imagem de textura
-				width, height		// width, height
-			);
-		}
-		else {
-			cout << "Error loading texture!" << endl;
-		}
-	}
-
-	// Para cada face do cubo
-	GLint face = 0;
-	for (auto file : textureFiles) {
-		// Leitura/descompressão do ficheiro com imagem de textura
-		int width, height, nChannels;
-		unsigned char* imageData = stbi_load(file.c_str(), &width, &height, &nChannels, 0);
-		if (imageData) {
-			// Carrega os dados da imagem para o Objeto de Textura vinculado ao target da face
-			glTexSubImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + face,
-				0,					// Nível do Mipmap
-				0, 0,				// xoffset, yoffset
-				width, height,		// width, height
-				nChannels == 4 ? GL_RGBA : GL_RGB,	// Formato da imagem
-				GL_UNSIGNED_BYTE,	// Tipos dos dados da imagem
-				imageData);			// Apontador para os dados da imagem de textura
-
-			face++;
-
-			// Liberta a imagem da memória do CPU
-			stbi_image_free(imageData);
-		}
-		else {
-			cout << "Error loading texture!" << endl;
-		}
-	}
-#else
-	// Ativa a inversão vertical da imagem, aquando da sua leitura para memória.
-	stbi_set_flip_vertically_on_load(true);
-
-	// Para cada face do cubo
-	GLint face = 0;
-
-	for (auto file : textureFiles) {
-		// Leitura/descompressão do ficheiro com imagem de textura
-		int width, height, nChannels;
-		unsigned char* imageData = stbi_load(file.c_str(), &width, &height, &nChannels, 0);
-		if (imageData) {
-			// Carrega os dados da imagem para o Objeto de Textura vinculado ao target da face
-			glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + face,
-				0,					// Nível do Mipmap
-				GL_RGB,				// Formato interno do OpenGL
-				width, height,		// width, height
-				0,					// border
-				nChannels == 4 ? GL_RGBA : GL_RGB,	// Formato da imagem
-				GL_UNSIGNED_BYTE,	// Tipos dos dados da imagem
-				imageData);			// Apontador para os dados da imagem de textura
-
-			face++;
-
-			// Liberta a imagem da memória do CPU
-			stbi_image_free(imageData);
-		}
-		else {
-			std::cout << "Error loading texture!" << std::endl;
-		}
-	}
-#endif
-}
-
-
-
 void SetUniforms(Shader shader) {
 
 	// Fonte de luz ambiente global
-	glm::vec3 amb (1.0f, 0.1f, 0.1f);
+	glm::vec3 amb (0.1f, 0.1f, 0.1f);
 	shader.SetUniformVec3("ambientLight.ambient", amb);
 
 	// Fonte de luz direcional
-	shader.SetUniform3f("directionalLight.direction", 1.0f, 0.0f, 0.0f);
+	shader.SetUniform3f("directionalLight.direction", 0.0f, 0.0f, 0.0f);
 	shader.SetUniform3f("directionalLight.ambient", 0.2f, 0.2f, 0.2f);
 	shader.SetUniform3f("directionalLight.diffuse", 1.0f, 1.0f, 1.0f);
 	shader.SetUniform3f("directionalLight.specular", 1.0f, 1.0f, 1.0f);
@@ -518,11 +444,9 @@ void SetUniforms(Shader shader) {
 
 
 
-
-
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
-	if (key == GLFW_KEY_1 && action == GLFW_PRESS) 
+	if (key == GLFW_KEY_1 && action == GLFW_PRESS)
 	{
 		amb = !amb;
 	}
@@ -540,6 +464,8 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 	}
 	if (key == GLFW_KEY_M && action == GLFW_PRESS) {
 		material = !material;
+	}
+	if (key == GLFW_KEY_C && action == GLFW_PRESS) {
 	}
 }
 

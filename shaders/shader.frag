@@ -69,9 +69,12 @@ uniform Material material;
 vec3 diffuseColor;
 
 uniform bool spotLightOn, pointLightOn, directionalLightOn, ambientLightOn;
+layout (location = 0) uniform sampler2D Texture;
 
 in vec3 vPositionEyeSpace;
 in vec3 vNormalEyeSpace;
+in vec2 InTextCoord;
+
 
 vec4 calcAmbientLight(AmbientLight light);
 vec4 calcDirectionalLight(DirectionalLight light, out vec4 ambient);
@@ -129,7 +132,11 @@ void main()
 		light3 = vec4(0,0,0,0);
 	}
 
-	color = emissive + (ambient/4) + light1 + light2 +light3;
+	vec4 textColor = texture(Texture, InTextCoord);
+
+
+	//exprimentar
+	color =  (emissive + (ambient/4) + light1 + light2 +light3)* textColor;
 }
 
 
