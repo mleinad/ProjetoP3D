@@ -45,6 +45,8 @@ public:
     Object3D(const char* path);
     ~Object3D();
 
+    Object3D(const char* path, bool _mtl);
+
     int getVertexCount();
     
     void printInfo(int numLines = -1); // Default to -1, imprime todas as linhas
@@ -56,13 +58,11 @@ public:
 
     Material material;
 
-    glm::vec3 FindCenter();
-
 private:
 
     bool loadOBJ(const char* path);
     bool loadMTL(const char* path);
-
+    bool loadDefaultMTL();
 };
 
 

@@ -15,9 +15,18 @@ out vec3 vPositionEyeSpace;
 out vec3 vNormalEyeSpace;
 out vec2 OutTextCoord;
 
+out vec3 vPositionWorldSpace;
+out vec3 vNormalWorldSpace; 
+
+
 void main()
 { 
 	vPositionEyeSpace = (ModelView * vec4(vPosition, 1.0)).xyz;
+
+
+ 	vec4 worldPosition = Model * vec4(vPosition, 1.0);
+	vPositionWorldSpace = worldPosition.xyz;
+ 	vNormalWorldSpace = normalize(NormalMatrix * vNormal);
 
 
 	vNormalEyeSpace = normalize(NormalMatrix * vNormal);

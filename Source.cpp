@@ -24,6 +24,7 @@
 #include <thread>
 #include "Light.h"
 #include "Texture.h"
+#include "Physics.h"
 
 extern "C"
 {
@@ -60,69 +61,6 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 
 
 void print_error(int error, const char* description);
-
-void display(std::vector<glm::vec3> obj, glm::mat4 mvp) {
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); //wireframe
-
-	float* vertex_stream = static_cast<float*>(glm::value_ptr(obj.front()));
-
-	std::vector<glm::vec3> colors{
-		glm::vec3(1.0f, 0.0f, 0.0f), // Red
-		glm::vec3(1.0f, 1.0f, 0.0f), // Yellow
-		glm::vec3(0.0f, 1.0f, 0.0f), // Green
-		glm::vec3(0.0f, 1.0f, 1.0f), // Cyan
-		glm::vec3(0.0f, 0.0f, 1.0f), // Blue
-		glm::vec3(1.0f, 0.0f, 1.0f)  // Magenta
-	};
-
-	// Desenha quad em modo imediato
-	glBegin(GL_TRIANGLES);
-	/* obj.size() * (obj.front().length()) é o mesmo que (6*4)*3 */
-	/* 6 faces * 4 vértices por face * 3 coordenadas por vértice */
-	for (size_t i = 0; i < obj.size(); ++i) {
-		// Assign a color based on the face index, reusing colors if needed
-		const glm::vec3& color = colors[i / 3 % colors.size()];
-		glColor3f(color.r, color.g, color.b);
-
-		// Access the vertex
-		const glm::vec3& vertex = obj[i];
-
-		// Transform the vertex by the MVP matrix
-		glm::vec4 transformed_vertex = mvp * glm::vec4(vertex, 1.0f);
-
-		// Perform perspective division
-		glm::vec4 normalized_vertex = transformed_vertex / transformed_vertex.w;
-
-		// Issue the vertex to OpenGL
-		glVertex3f(normalized_vertex.x, normalized_vertex.y, normalized_vertex.z);
-	}
-	glEnd();
-}
-
-
-void draw(glm::mat4 projection, std::vector<glm::vec3> object, float& angle)
-{
-
-
-	glm::mat4 view = glm::lookAt(
-		glm::vec3(0.0f, 0.0f, ZOOM),	// Posição da câmara no mundo
-		glm::vec3(0.0f, 0.0f, -1.0f),	// Direção para a qual a câmara esta apontada
-		glm::vec3(0.0f, 1.0f, 0.0f)		// Vector vertical
-	);
-
-	// Model
-	glm::mat4 model = glm::mat4(1.0f);
-
-	// Vai efetuando uma rotação ao objeto (apenas para podermos ver todas as faces desenhadas).
-	model = glm::rotate(model, angle += 0.001, glm::normalize(glm::vec3(1.0f, 1.0f, 0.0f)));
-
-	// MVP
-	glm::mat4 mvp = projection * view * model;
-
-	display(object, mvp);
-}
 
 
 bool spot = true, point = true, dir = true, amb = true, material = true;
@@ -174,7 +112,7 @@ int main() {
 
 
 
-	const int MODEL_COUNT=5;
+	const int MODEL_COUNT=2;
 
 	Shader shader("shaders/shader.frag", "shaders/shader.vert");
 
@@ -208,6 +146,16 @@ int main() {
 		shader.Bind();
 	}
 
+
+	Object3D Table("OBJ files/cube.obj", false);
+
+
+	VertexBuffer VBO_table(&Table.meshVector[0], Table.meshVector.size()*sizeof(glm::vec3));
+	
+	VertexArray VAO_table;
+	VAO_table.AddBuffer(VBO_table, layout_v);
+
+	shader.Bind();
 
 
 	glm::mat4 projection = glm::perspective(glm::radians(45.0f),(float)videoMode->width/(float)videoMode->height, 0.1f, 1000.f);
@@ -256,6 +204,7 @@ int main() {
 		VBOs[i].Unbind();
 	}
 
+#pragma region Lights
 
 	Light *light_Ptr[4];
 
@@ -278,7 +227,7 @@ int main() {
 		0.0075f,//quadratic
 		10.5f,	//spout cut off
 		12.0f);	//spot exponent
-	
+
 	PointLight pointLight(
 		glm::vec3(0.1f, 0.1f, 0.1f),//ambiente
 		glm::vec3(1.0f, 1.0f, 1.0f),//diffuse
@@ -287,7 +236,7 @@ int main() {
 		1.0f,	//constant
 		0.045f,	//linear
 		0.0075f//quadratic
-		);
+	);
 
 
 	light_Ptr[0] = &ambientLight;
@@ -297,28 +246,35 @@ int main() {
 
 
 	/*for (int i=0; i < 4; i++) {
-	
+
 		light_Ptr[i]->UseLight(shader);
-	
+
 	}*/
+
+#pragma endregion
 
 	SetUniforms(shader);
 
 	glEnable(GL_DEPTH_TEST);
 
 	glm::vec3 world_position(0.0f, 0.0f, 0.0f);
-	float offset[5] = {-5.0f, -2.0f, 0.0f, 2.0f, 5.0f};
-	
+	//	float offset[5] = {-5.0f, -2.0f, 0.0f, 2.0f, 5.0f};
+	float offset[2] = { -5.0f, 5.0f };
 
-	std::vector<glm::vec3> centers;
+
+	int j = 0;
+	Physics physics;
+
+
+
+	std::vector<glm::mat4> ModelViews;
 
 	for (int i = 0; i < MODEL_COUNT; i++) {
-	
-		centers.push_back(models[i].FindCenter());
-	
+		ModelViews.push_back(ModelView);
 	}
-	
-	int j = 0;
+
+
+	int factor = 1;
 
 	while (!glfwWindowShouldClose(window))
 	{
@@ -334,31 +290,45 @@ int main() {
 
 
 		//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-			
+
 		shader.SetUniform1i("spotLightOn", spot);
 		shader.SetUniform1i("pointLightOn", point);
 		shader.SetUniform1i("directionalLightOn", dir);
 		shader.SetUniform1i("ambientLightOn", amb);
 
-		
+
 		glm::vec3 translation;
 
 
 
 
-		for (int i=0; i<MODEL_COUNT; i++)
+		for (int i = 0; i < MODEL_COUNT; i++)
 		{
-	
-			
-		
+
+
+
 			translation = glm::vec3(offset[i], 0, 0);
 
+			if (!physics.CheckCollisions(ModelViews[i], ModelViews))//check collision 
+			{
+				if (i == 0)
+				{
+					translation = glm::vec3(offset[i] += 0.01f*factor, 0, 0);
+				}
+			}
+			else 
+			{
+				translation = glm::vec3(offset[i] * factor, 0, 0);
+			}
 			model = glm::translate(glm::mat4(1.0f), translation);
-		
-			ModelView = view * model;
-			NormalMatrix = glm::inverseTranspose(glm::mat3(ModelView));
+
+
+			ModelViews[i] = view * model;
+			NormalMatrix = glm::inverseTranspose(glm::mat3(ModelViews[i]));
 			
-			shader.SetUniformMat4f("ModelView", ModelView);
+		
+
+			shader.SetUniformMat4f("ModelView", ModelViews[i]);
 			shader.SetUniformMat3f("NormalMatrix", NormalMatrix);
 		
 			
@@ -381,13 +351,27 @@ int main() {
 				shader.SetUniform1f("material.shininess", 12.0f);
 			}
 			
-				glm::vec3 newCenter = glm::vec3(ModelView * glm::vec4(centers[i], 1.0f));
-				printf("\nball %d -> center: (%f,%f,%f)\n", i, newCenter.x, newCenter.y, newCenter.z);
 
 				buffer.Draw(VAOs[i], models[i].getVertexCount(), shader);
 		}
 
+		//----------------------MESA----------------------------
+		translation = glm::vec3(0.0f, -4.0f, 0.0f);
+		
 
+		model = glm::scale(glm::mat4(1.0f), glm::vec3(5.0f, 0.5f, 3.5f));
+		model = glm::translate(model, translation);
+
+
+		ModelView = view * model;
+		NormalMatrix = glm::inverseTranspose(glm::mat3(ModelView));
+		
+		shader.SetUniformMat4f("ModelView", ModelView);
+		shader.SetUniformMat3f("NormalMatrix", NormalMatrix);
+		buffer.Draw(VAO_table, Table.getVertexCount(), shader);
+		//-------------------------------------------------------
+		
+		
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 
@@ -400,8 +384,6 @@ int main() {
 void print_error(int error, const char* description) {
 	std::cout << description << std::endl;
 }
-
-
 
 void SetUniforms(Shader shader) {
 

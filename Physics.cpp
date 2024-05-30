@@ -1,5 +1,6 @@
 #include "Physics.h"
 #include "glm/glm.hpp"
+#include <iostream>
 
 
 
@@ -19,11 +20,27 @@ struct BallWallPair {
     Wall wall;
 };
 
-bool Physics::CheckCollision(Ball ball1, Ball ball2)
+bool Physics::CheckCollisionIndevidual(glm::mat4 MV1, glm::mat4 MV2)
 {
-    float distanceSquared = glm::distance(ball1.pos, ball2.pos);
+    glm::vec3 center1 = glm::vec3(MV1[3]);
+    glm::vec3 center2 = glm::vec3(MV2[3]);
 
-    float sumOfRadSquared = (ball1.r + ball2.r) * (ball1.r + ball2.r);
+    float distance = glm::distance(center1, center2);
 
-    return distanceSquared <= sumOfRadSquared;
+    return distance <= 2.0f;
+}
+
+bool Physics::CheckCollisions(glm::mat4 CurrentModelView, std::vector<glm::mat4>ModelViewVector) {
+
+    for (const auto& modelView : ModelViewVector) {
+        if (modelView == CurrentModelView) {
+            continue;
+        }
+        if (CheckCollisionIndevidual(CurrentModelView, modelView)) {
+            // Handle collision
+            std::cout << "Collision detected!" << std::endl;
+            return true; 
+        }
+    }
+    return false;
 }

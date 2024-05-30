@@ -10,11 +10,10 @@ Object3D::Object3D(const char* path)
 
 }
 
-
-
-Object3D::Object3D()
+Object3D::Object3D(const char* path, bool _mtl)
 {
-
+	loadOBJ(path);
+	loadDefaultMTL();
 }
 
 
@@ -26,29 +25,6 @@ Object3D::~Object3D()
 int Object3D::getVertexCount()
 {
 	return meshVector.size();
-}
-
-glm::vec3 Object3D::FindCenter()
-{
-	int numVertices = meshStruct.size();
-
-		double sumX = 0.0, sumY = 0.0, sumZ = 0.0;
-
-		for (int i = 0; i > numVertices; i++) {
-			sumX += meshStruct[i].vertices.x;
-			sumY += meshStruct[i].vertices.y;
-			sumZ += meshStruct[i].vertices.z;
-		}
-		glm::vec3 centroid;
-
-		centroid.x = sumX / numVertices;
-		centroid.y = sumY / numVertices;
-		centroid.z = sumZ / numVertices;
-		float raio = glm::distance(centroid, meshStruct[0].vertices);
-
-		printf("\ncentroid: %f, %f, %f", centroid.x, centroid.y, centroid.z);
-		printf("\n r: %f", raio);
-	return centroid;
 }
 
 bool Object3D ::loadOBJ(const char* path){
@@ -231,6 +207,19 @@ bool Object3D::loadMTL(const char* path)
 
 }
 
+bool Object3D::loadDefaultMTL()
+{
+
+
+	material.shininess = 12.0f;
+	material.difuse = glm::vec3(1.0f, 1.0f, 1.0f);;
+	material.specular = glm::vec3(1.0f, 1.0f, 1.0f);
+	material.ambient = glm::vec3(1.0f, 1.0f, 1.0f);
+	material.texture = "X";
+
+
+	return true;
+}
 
 void Object3D::printInfo(int numLines) {
 	// Print vertices

@@ -1,5 +1,6 @@
 #pragma once
 #include <glm/glm.hpp>
+#include <vector>
 class Physics
 {
 
@@ -14,6 +15,12 @@ class Physics
 
 public:
 
-    bool CheckCollision(Ball ball1, Ball ball2);
+
+    bool CheckCollisions(glm::mat4 CurrentModelView, std::vector<glm::mat4>ModelViewVector);
+
+private:
+    bool CheckCollisionIndevidual(glm::mat4 MV1, glm::mat4 MV2);
+
+    glm::mat4 ModelView;
 };
 

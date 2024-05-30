@@ -76,6 +76,10 @@ in vec3 vNormalEyeSpace;
 in vec2 InTextCoord;
 
 
+in vec3 vPositionWorldSpace;
+in vec3  vNormalWorldSpace;
+
+
 vec4 calcAmbientLight(AmbientLight light);
 vec4 calcDirectionalLight(DirectionalLight light, out vec4 ambient);
 vec4 calcPointLight(PointLight light, out vec4 ambient);
@@ -136,7 +140,7 @@ void main()
 
 
 	//exprimentar
-	color =  (emissive + (ambient/4) + light1 + light2 +light3)* textColor;
+	color =  (emissive + (ambient/4) + light1 + light2 +light3);
 }
 
 
