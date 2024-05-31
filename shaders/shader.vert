@@ -29,6 +29,6 @@ void main()
 
 //
 	vNormalEyeSpace = normalize(NormalMatrix * vNormal);
-//	OutTextCoord = InTextCoord.xy;	//MUITO MAIS SIMPLES DO QUE A STRUCT MESH
+	OutTextCoord = InTextCoord.xy;	//MUITO MAIS SIMPLES DO QUE A STRUCT MESH
 	gl_Position = Projection * ModelView * vec4(vPosition, 1.0f);
 }//

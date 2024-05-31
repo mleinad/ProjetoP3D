@@ -117,8 +117,8 @@ int main() {
 
 	
 
-	//Shader shader("shaders/shader.frag", "shaders/shader.vert");
-	Shader shader("../../ProjetoP3D/ProjetoP3D/shaders/shader.frag", "../../ProjetoP3D/ProjetoP3D/shaders/shader.vert");
+	Shader shader("shaders/shader.frag", "shaders/shader.vert");
+	//Shader shader("../../ProjetoP3D/ProjetoP3D/shaders/shader.frag", "../../ProjetoP3D/ProjetoP3D/shaders/shader.vert");
 
 		VertexBufferLayout layout_v;
 
@@ -131,8 +131,19 @@ int main() {
 	VertexBuffer VBOs[MODEL_COUNT];
 	VertexArray VAOs[MODEL_COUNT];
 
+
+
 	std::string image_path = "Texture/PoolBalluv1.jpg";	
 	Texture texture(image_path);
+
+
+	//Object3D object("path to object");
+	//object.meshVector <- std::vector<glm::vec3>
+	//VBO ->stream de data &objetc.meshVector[0] | size -> models[0].meshVector.size() * sizeof(glm::vec3)
+	//numero de vertices -> object.getVertexCount()
+
+
+
 
 	for (int i = 0; i < MODEL_COUNT; i++) {
 
@@ -393,6 +404,7 @@ int main() {
 			
 
 				buffer.Draw(VAOs[i], models[i].getVertexCount(), shader);
+
 		}
 
 		//----------------------MESA----------------------------
