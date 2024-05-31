@@ -129,9 +129,9 @@ bool Object3D ::loadOBJ(const char* path){
 		tempMesh.normals = normal;
 		tempMesh.uvs = uv;
 
-		meshVector.push_back(vertex);
+		meshVector.push_back(glm::vec3(uv.x, uv.y, 1.0f));
 		meshVector.push_back(normal);
-		meshVector.push_back(glm::vec3(uv.x, uv.y, 0.0f));
+		meshVector.push_back(vertex);
 
 		meshStruct.push_back(tempMesh);
 	}
@@ -223,27 +223,20 @@ bool Object3D::loadDefaultMTL()
 
 void Object3D::printInfo(int numLines) {
 	// Print vertices
-	//
-	//std::cout << "Vertices:" << std::endl;
-	//for (int i = 0; i < mesh.vertices.size() && (numLines == -1 || i < numLines); ++i) {
-	//	const auto& vertex = vertices[i];
-	//	std::cout << "  (" << vertex.x << ", " << vertex.y << ", " << vertex.z << ")" << std::endl;
-	//}
-
-	//// Print texture coordinates (UVs)
-	//std::cout << "UVs:" << std::endl;
-	//for (int i = 0; i < uvs.size() && (numLines == -1 || i < numLines); ++i) {
-	//	const auto& uv = uvs[i];
-	//	std::cout << "  (" << uv.x << ", " << uv.y << ")" << std::endl;
-	//}
-
-	//// Print normals
-	//std::cout << "Normals:" << std::endl;
-	//for (int i = 0; i < normals.size() && (numLines == -1 || i < numLines); ++i) {
-	//	const auto& normal = normals[i];
-	//	std::cout << "  (" << normal.x << ", " << normal.y << ", " << normal.z << ")" << std::endl;
-	//}
-
+	
+	std::cout << "Vertices:" << std::endl;
+	for (int i = 0; i < meshVector.size() && (numLines == -1 || i < numLines); i+=3) {
+		const auto& vertex = meshVector[i];
+		std::cout << "  (" << vertex.x << ", " << vertex.y << ", " << vertex.z << ")" << std::endl;
+		
+		std::cout << "UVs:" << std::endl;
+		const auto& uv = meshVector[i+1];
+		std::cout << "  (" << uv.x << ", " << uv.y << ")" << std::endl;
+	
+		const auto& normal = meshVector[i+2];
+		std::cout << "  (" << normal.x << ", " << normal.y << ", " << normal.z << ")" << std::endl;
+	
+	}
 }
 
 

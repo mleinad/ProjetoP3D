@@ -168,18 +168,18 @@ int main() {
 
 		
 	
-	//	->	ERROR Program/shader state performance warning: Vertex shader in program 1 is being recompiled based on GL state.
 
-
+		
+	
 		Object3D Table("OBJ files/cube.obj", false);
 
 
-	VertexBuffer VBO_table(&Table.meshVector[0], Table.meshVector.size()*sizeof(glm::vec3));
+	
+		VertexBuffer VBO_table(&Table.meshVector[0], Table.meshVector.size()*sizeof(glm::vec3));
 	
 	VertexArray VAO_table;
 	VAO_table.AddBuffer(VBO_table, layout_v);
 	texture.Bind();
-
 
 
 
