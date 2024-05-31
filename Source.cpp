@@ -117,7 +117,7 @@ int main() {
 
 	
 
-	Shader shader("shaders/shader.frag", "shaders/shader.vert");
+	Shader shader("../../ProjetoP3D/ProjetoP3D/shaders/shader.frag", "../../ProjetoP3D/ProjetoP3D/shaders/shader.vert");
 
 
 		VertexBufferLayout layout_v;
@@ -310,6 +310,8 @@ int main() {
 
 	int factor = 1;
 
+
+	// Push main
 	while (!glfwWindowShouldClose(window))
 	{
 

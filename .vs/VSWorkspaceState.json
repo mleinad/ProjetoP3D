@@ -1,8 +1,9 @@
 {
   "ExpandedNodes": [
     "",
-    "\\Luis"
+    "\\Luis",
+    "\\shaders"
   ],
-  "SelectedNode": "\\Luis\\IndexBuffer.cpp",
+  "SelectedNode": "\\shaders\\shader.frag",
   "PreviewInSolutionExplorer": false
 }
