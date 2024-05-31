@@ -8,7 +8,7 @@ uniform mat3 NormalMatrix;
 
 in vec3 vPosition;			// Coordenadas locais do v�rtice
 in vec3 vNormal;			// Normal do v�rtice
-//in vec3 InTextCoord;		// UVs  
+in vec3 InTextCoord;		// UVs  
 
 
 out vec3 vPositionEyeSpace;

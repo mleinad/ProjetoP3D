@@ -69,7 +69,7 @@ public:
 	}
 
 	template<>
-	void Push<glm::vec2>(unsigned int count) {		//GL_FLOAT_VEC3 ->  GL_HALF_FLOAT_OES <type> requires extension ARB_ES2_compatibility
+	void Push<glm::vec2>(unsigned int count) {
 		m_Elements.push_back(VertexBufferElement({ GL_FLOAT, count * 2, GL_TRUE }));
 		m_Stride += (count*2) * VertexBufferElement::GetSizeOfType(GL_FLOAT);
 	}

@@ -117,14 +117,14 @@ int main() {
 
 	
 
+	//Shader shader("shaders/shader.frag", "shaders/shader.vert");
 	Shader shader("../../ProjetoP3D/ProjetoP3D/shaders/shader.frag", "../../ProjetoP3D/ProjetoP3D/shaders/shader.vert");
-
 
 		VertexBufferLayout layout_v;
 
 		layout_v.Push<glm::vec3>(1); //vertices
 		layout_v.Push<glm::vec3>(1); //normais
-		//layout_v.Push<glm::vec3>(1); //UVs
+		layout_v.Push<glm::vec3>(1); //UVs
 
 
 	std::vector<Object3D> models;

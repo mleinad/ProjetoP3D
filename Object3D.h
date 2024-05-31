@@ -32,8 +32,12 @@ struct Material
     std::string mtl_path;
 
     void loadTexture() {
-        //loadtexture
+
+        //add path
+
     }
+
+
 };
 
 
@@ -42,6 +46,7 @@ class Object3D
 public:
 
     Object3D();
+
     Object3D(const char* path);
     ~Object3D();
 
@@ -55,7 +60,6 @@ public:
     std::vector<Mesh> meshStruct;
 
     std::vector<glm::vec3>meshVector;
-
     Material material;
 
 private:
