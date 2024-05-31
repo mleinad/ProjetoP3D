@@ -157,6 +157,11 @@
   <ItemGroup>
     <None Include="shaders\shader.frag" />
     <None Include="shaders\shader.vert" />
+    <None Include="shaders\table_shader.frag" />
+    <None Include="shaders\table_shader.vert" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="Texture\PoolBalluv1.jpg" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

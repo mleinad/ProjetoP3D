@@ -1,11 +1,11 @@
 ﻿  Source.cpp
 C:\Users\danie\OneDrive\Documentos\IPCA\2º Ano\PROG 3D v2\Projeto\ProjetoP3D\ProjetoP3D\Source.cpp(10,10): warning C4067: unexpected tokens following preprocessor directive - expected a newline
-C:\Users\danie\OneDrive\Documentos\IPCA\2º Ano\PROG 3D v2\Projeto\ProjetoP3D\ProjetoP3D\Source.cpp(140,70): warning C4267: 'argument': conversion from 'size_t' to 'unsigned int', possible loss of data
-C:\Users\danie\OneDrive\Documentos\IPCA\2º Ano\PROG 3D v2\Projeto\ProjetoP3D\ProjetoP3D\Source.cpp(153,70): warning C4267: 'argument': conversion from 'size_t' to 'unsigned int', possible loss of data
+C:\Users\danie\OneDrive\Documentos\IPCA\2º Ano\PROG 3D v2\Projeto\ProjetoP3D\ProjetoP3D\Source.cpp(146,70): warning C4267: 'argument': conversion from 'size_t' to 'unsigned int', possible loss of data
+C:\Users\danie\OneDrive\Documentos\IPCA\2º Ano\PROG 3D v2\Projeto\ProjetoP3D\ProjetoP3D\Source.cpp(166,70): warning C4267: 'argument': conversion from 'size_t' to 'unsigned int', possible loss of data
      Creating library C:\Users\danie\OneDrive\Documentos\IPCA\2º Ano\PROG 3D v2\Projeto\ProjetoP3D\x64\Release\ProjetoP3D.lib and object C:\Users\danie\OneDrive\Documentos\IPCA\2º Ano\PROG 3D v2\Projeto\ProjetoP3D\x64\Release\ProjetoP3D.exp
 MSVCRT.lib(initializers.obj) : warning LNK4098: defaultlib 'libcmt.lib' conflicts with use of other libs; use /NODEFAULTLIB:library
   Generating code
-  1 of 1065 functions (<0.1%) were compiled, the rest were copied from previous compilation.
+  1 of 1059 functions (<0.1%) were compiled, the rest were copied from previous compilation.
     0 functions were new in current compilation
     8 functions had inline decision re-evaluated but remain unchanged
   Finished generating code

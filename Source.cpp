@@ -57,6 +57,7 @@ void scrollCallback(GLFWwindow* window, double xoffset, double yoffset) {
 void GLAPIENTRY MessageCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam) {
 	std::cout << "ERROR " << message;
 }
+
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
 
 
@@ -114,6 +115,8 @@ int main() {
 
 	const int MODEL_COUNT=2;
 
+	
+
 	Shader shader("shaders/shader.frag", "shaders/shader.vert");
 
 
@@ -121,12 +124,15 @@ int main() {
 
 		layout_v.Push<glm::vec3>(1); //vertices
 		layout_v.Push<glm::vec3>(1); //normais
-		layout_v.Push<glm::vec3>(1); //UVs
+		//layout_v.Push<glm::vec3>(1); //UVs
 
 
 	std::vector<Object3D> models;
 	VertexBuffer VBOs[MODEL_COUNT];
 	VertexArray VAOs[MODEL_COUNT];
+
+	std::string image_path = "Texture/PoolBalluv1.jpg";	
+	Texture texture(image_path);
 
 	for (int i = 0; i < MODEL_COUNT; i++) {
 
@@ -143,20 +149,32 @@ int main() {
 
 		VAOs[i].Bind();
 
-		shader.Bind();
+
 	}
 
+		shader.Bind();
+		texture.Bind();
 
-	Object3D Table("OBJ files/cube.obj", false);
+		
+	
+	//	->	ERROR Program/shader state performance warning: Vertex shader in program 1 is being recompiled based on GL state.
+
+
+		Object3D Table("OBJ files/cube.obj", false);
 
 
 	VertexBuffer VBO_table(&Table.meshVector[0], Table.meshVector.size()*sizeof(glm::vec3));
 	
 	VertexArray VAO_table;
 	VAO_table.AddBuffer(VBO_table, layout_v);
+	texture.Bind();
+
+
+
 
 	shader.Bind();
-
+	
+//	table_shader.Unbind();
 
 	glm::mat4 projection = glm::perspective(glm::radians(45.0f),(float)videoMode->width/(float)videoMode->height, 0.1f, 1000.f);
 
@@ -178,11 +196,9 @@ int main() {
 	glm::vec3 direction(2.0f, -1.0f, -2.0f);
 	
 
-	shader.Bind(); 
 
-	std::string image_path = "Texture/PoolBalluv1.jpg";
-	Texture texture(image_path);
-	texture.Bind();
+	
+
 
 
 	shader.SetUniform1i("Texture", 0);
@@ -195,7 +211,18 @@ int main() {
 	shader.SetUniformMat4f("Projection", projection);
 
 
+/*	table_shader.Bind();
 
+	table_shader.SetUniformMat4f("Model", model);
+	table_shader.SetUniformMat4f("View", view);
+	table_shader.SetUniformMat4f("ModelView", ModelView);
+	table_shader.SetUniformMat3f("NormalMatrix", NormalMatrix);
+	table_shader.SetUniformMat4f("Projection", projection);
+
+	table_shader.SetUniform4f("table_color", 0.05f, 0.87f, 0.24f, 1.0f);
+
+	table_shader.Unbind();
+	*/
 	Buffer buffer;
 
 	for (int i = 0; i < MODEL_COUNT; i++)
@@ -203,6 +230,8 @@ int main() {
 		VAOs[i].Unbind();
 		VBOs[i].Unbind();
 	}
+
+
 
 #pragma region Lights
 
@@ -253,11 +282,16 @@ int main() {
 
 #pragma endregion
 
+	
 	SetUniforms(shader);
+	//SetUniforms(table_shader);
+
+
+
 
 	glEnable(GL_DEPTH_TEST);
 
-	glm::vec3 world_position(0.0f, 0.0f, 0.0f);
+	glm::vec3 world_position(3.0f, 0.0f, 6.0f);
 	//	float offset[5] = {-5.0f, -2.0f, 0.0f, 2.0f, 5.0f};
 	float offset[2] = { -5.0f, 5.0f };
 
@@ -290,18 +324,22 @@ int main() {
 
 
 		//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-
 		shader.SetUniform1i("spotLightOn", spot);
 		shader.SetUniform1i("pointLightOn", point);
 		shader.SetUniform1i("directionalLightOn", dir);
 		shader.SetUniform1i("ambientLightOn", amb);
-
+		/*
+		table_shader.Bind();
+		table_shader.SetUniform1i("spotLightOn", spot);
+		table_shader.SetUniform1i("pointLightOn", point);
+		table_shader.SetUniform1i("directionalLightOn", dir);
+		table_shader.SetUniform1i("ambientLightOn", amb);
+		table_shader.Unbind();*/
 
 		glm::vec3 translation;
 
 
-
-
+		shader.SetUniform1i("IsTable", false);
 		for (int i = 0; i < MODEL_COUNT; i++)
 		{
 
@@ -356,21 +394,37 @@ int main() {
 		}
 
 		//----------------------MESA----------------------------
+		
 		translation = glm::vec3(0.0f, -4.0f, 0.0f);
 		
 
 		model = glm::scale(glm::mat4(1.0f), glm::vec3(5.0f, 0.5f, 3.5f));
 		model = glm::translate(model, translation);
 
-
 		ModelView = view * model;
 		NormalMatrix = glm::inverseTranspose(glm::mat3(ModelView));
 		
+
+		shader.SetUniform3f("material.emissive", 0.0f, 0.0f, 0.0f);
+		shader.SetUniformVec3("material.ambient", Table.material.ambient);
+		shader.SetUniformVec3("material.diffuse", Table.material.difuse);
+		shader.SetUniformVec3("material.specular",Table.material.specular);
+		shader.SetUniform1f("material.shininess", Table.material.shininess);
+		
+
 		shader.SetUniformMat4f("ModelView", ModelView);
 		shader.SetUniformMat3f("NormalMatrix", NormalMatrix);
+
+		shader.SetUniform1i("IsTable", true);
+
 		buffer.Draw(VAO_table, Table.getVertexCount(), shader);
+		
+		
+		
 		//-------------------------------------------------------
 		
+
+
 		
 		glfwSwapBuffers(window);
 		glfwPollEvents();
@@ -419,7 +473,6 @@ void SetUniforms(Shader shader) {
 	shader.SetUniform1f("spotLight.spotCutoff", cos(glm::radians(10.5f)));
 	shader.SetUniform1f("spotLight.spotExponent", cos(glm::radians(12.0f)));
 	shader.SetUniform3f("spotLight.spotDirection", 0.0f, -1.0f, 0.0f);
-
 
 
 }

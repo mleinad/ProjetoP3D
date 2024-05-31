@@ -8,7 +8,7 @@ uniform mat4 ModelView;
 out vec4 color;
 
 
-uniform vec4 u_Color;
+uniform vec4 table_color;
 
 struct AmbientLight {
 	vec3 ambient;	
@@ -68,25 +68,11 @@ struct Material{
 uniform Material material;
 vec3 diffuseColor;
 
-
-
 uniform bool spotLightOn, pointLightOn, directionalLightOn, ambientLightOn;
-
-
-uniform bool IsTable; //soluçao da treta -> implementar multiplos shaders
-
-
-
-uniform sampler2D Texture;
 
 in vec3 vPositionEyeSpace;
 in vec3 vNormalEyeSpace;
-//layout (location = 2) in vec2 InTextCoord;
-//in vec2 InTextCoord;
-
-in vec3 vPositionWorldSpace;
-in vec3  vNormalWorldSpace;
-
+in vec2 InTextCoord;
 
 vec4 calcAmbientLight(AmbientLight light);
 vec4 calcDirectionalLight(DirectionalLight light, out vec4 ambient);
@@ -99,6 +85,9 @@ void main()
 {
 	diffuseColor = material.diffuse;
 	vec4 emissive = vec4(material.emissive, 1.0);
+
+	
+
 
 	vec4 ambient;
 	vec4 light1, light2, light3;
@@ -143,22 +132,10 @@ void main()
 		light3 = vec4(0,0,0,0);
 	}
 
-	//vec4 textColor = texture(Texture, InTextCoord);
-
 
 	//exprimentar
+	color = table_color + (emissive + (ambient/4) + light1 + light2 +light3);
 
-	if(IsTable)
-	{
-		color = vec4(0.05f, 0.87f, 0.24f, 1.0f) *( emissive + (ambient/4) + light1 + light2 +light3);
-	}else
-	{
-
-	//color = textColor * (emissive + (ambient/4) + light1 + light2 +light3);
-	
-	color = (emissive + (ambient/4) + light1 + light2 +light3);
-	}
-	
 }
 
 
