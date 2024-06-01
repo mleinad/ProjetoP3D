@@ -10,9 +10,11 @@ class Texture {
 public:
     Texture(const std::string& path);
     ~Texture();
-
+    Texture();
     void Bind(unsigned int slot = 0) const;
     void Unbind() const;
+
+    void LateInit(const std::string& path);
 
     inline int GetWidth() const { return m_Width; }
     inline int GetHeight() const { return m_Height; }

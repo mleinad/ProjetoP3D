@@ -34,6 +34,16 @@ extern "C"
 	__declspec(dllexport) unsigned long NvOptimusEnablement = 0x00000001;
 }
 
+struct InstallStruct {
+
+	VertexArray *vao;
+	VertexBuffer *vbo;
+	VertexBufferLayout *layout;
+	Texture *text;
+	Object3D *objFile;
+};
+
+
 GLfloat ZOOM = 10.0f;
 float angle = 0.0f;
 
@@ -41,33 +51,25 @@ glm::mat3 NormalMatrix;
 
 void SetUniforms(Shader shader);
 
-void scrollCallback(GLFWwindow* window, double xoffset, double yoffset) {
-	//zoom in
-	if (yoffset == 1) {
+void scrollCallback(GLFWwindow* window, double xoffset, double yoffset);
+void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
 
-		ZOOM -= fabs(ZOOM) * 0.1f;
-	}
-	//zoom out
-	else if (yoffset == -1) {
 
-		ZOOM += fabs(ZOOM) * 0.1f;
 
-	}
 
-}
+
+void Install(InstallStruct pack);
 
 
 void GLAPIENTRY MessageCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam) {
 	std::cout << "ERROR " << message;
 }
-
-void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
-
-
 void print_error(int error, const char* description);
 
 
-bool spot = true, point = true, dir = true, amb = true, material = true;
+
+
+bool spot = true, point = true, dir = true, amb = true, material = true, isMoving = false;
 
 
 int main() {
@@ -81,9 +83,6 @@ int main() {
 
 
 	if (!glfwInit()) return -1;
-
-
-
 
 
 	GLFWmonitor* monitor = glfwGetPrimaryMonitor();
@@ -116,82 +115,62 @@ int main() {
 
 
 
-	const int MODEL_COUNT=2;
+	const int MODEL_COUNT=15;
 
 	
 
-	//Shader shader("shaders/shader.frag", "shaders/shader.vert");
-	Shader shader("../../ProjetoP3D/ProjetoP3D/shaders/shader.frag", "../../ProjetoP3D/ProjetoP3D/shaders/shader.vert");
+	Shader shader("shaders/shader.frag", "shaders/shader.vert");
+	//Shader shader("../../ProjetoP3D/ProjetoP3D/shaders/shader.frag", "../../ProjetoP3D/ProjetoP3D/shaders/shader.vert");
 
-		VertexBufferLayout layout_v;
+	VertexBufferLayout layout_v;
 
-		layout_v.Push<glm::vec3>(1); //vertices
-		layout_v.Push<glm::vec3>(1); //normais
-		layout_v.Push<glm::vec3>(1); //UVs
-
+	layout_v.Push<glm::vec3>(1); //vertices
+	layout_v.Push<glm::vec3>(1); //normais
+	layout_v.Push<glm::vec3>(1); //UVs
 
 	std::vector<Object3D> models;
 	VertexBuffer VBOs[MODEL_COUNT];
 	VertexArray VAOs[MODEL_COUNT];
-
-
-
-	//std::string image_path = "Texture/PoolBalluv1.jpg";
-	std::string image_path = "../../ProjetoP3D/ProjetoP3D/Texture/PoolBalluv1.jpg";
-	Texture texture(image_path);
-
-
-	//Object3D object("path to object");
-	//object.meshVector <- std::vector<glm::vec3>
-	//VBO ->stream de data &objetc.meshVector[0] | size -> models[0].meshVector.size() * sizeof(glm::vec3)
-	//numero de vertices -> object.getVertexCount()
-
-
+	Texture Textures[MODEL_COUNT];
 
 
 	for (int i = 0; i < MODEL_COUNT; i++) {
 
-		std::string fileName = "OBJ files/Ball" + std::to_string(i + 1) + ".obj";
+		InstallStruct installStruct;
 		
+		std::string fileName = "OBJ files/Ball" + std::to_string(i + 1) + ".obj";
 
 		Object3D model(fileName.c_str());
 
 		models.push_back(model);
 
-		VBOs[i].LateInit(&model.meshVector[0], models[0].meshVector.size() * sizeof(glm::vec3));
+		installStruct.layout = &layout_v;
+		installStruct.objFile = &model;
+		installStruct.vao = &VAOs[i];
+		installStruct.vbo = &VBOs[i];
+		installStruct.text = &Textures[i];
 
-		VAOs[i].AddBuffer(VBOs[i], layout_v);
-
-		VAOs[i].Bind();
-
-
+		Install(installStruct);
 	}
-
-		shader.Bind();
-		texture.Bind();
-
-		
 	
-
-		
-	
-		Object3D Table("OBJ files/cube.obj", false);
-
+	shader.Bind();
 
 	
-		VertexBuffer VBO_table(&Table.meshVector[0], Table.meshVector.size()*sizeof(glm::vec3));
+	Object3D Table("OBJ files/cube.obj", false);
 	
 	VertexArray VAO_table;
-	VAO_table.AddBuffer(VBO_table, layout_v);
-	texture.Bind();
+	VertexBuffer VBO_table;
 
+	InstallStruct installStruct;
+	installStruct.layout = &layout_v;
+	installStruct.objFile = &Table;
+	installStruct.vao = &VAO_table;
+	installStruct.vbo = &VBO_table;
+	
+	Install(installStruct);
 
-	//for (int i = 0; i < Table.meshVector.size();i++) {
-	//	std::cout << "  (" << Table.meshVector[i].x << ", " << Table.meshVector[i].y << ", " << Table.meshVector[i].z << ")" << std::endl;
-	//}
 	shader.Bind();
 	
-//	table_shader.Unbind();
 
 	glm::mat4 projection = glm::perspective(glm::radians(45.0f),(float)videoMode->width/(float)videoMode->height, 0.1f, 1000.f);
 
@@ -227,97 +206,70 @@ int main() {
 	shader.SetUniformMat3f("NormalMatrix", NormalMatrix);
 	shader.SetUniformMat4f("Projection", projection);
 
-
-/*	table_shader.Bind();
-
-	table_shader.SetUniformMat4f("Model", model);
-	table_shader.SetUniformMat4f("View", view);
-	table_shader.SetUniformMat4f("ModelView", ModelView);
-	table_shader.SetUniformMat3f("NormalMatrix", NormalMatrix);
-	table_shader.SetUniformMat4f("Projection", projection);
-
-	table_shader.SetUniform4f("table_color", 0.05f, 0.87f, 0.24f, 1.0f);
-
-	table_shader.Unbind();
-	*/
 	Buffer buffer;
-
-	for (int i = 0; i < MODEL_COUNT; i++)
-	{
-		VAOs[i].Unbind();
-		VBOs[i].Unbind();
-	}
-
 
 
 #pragma region Lights
 
-	Light *light_Ptr[4];
+	Light* light_Ptr[4];  // Array of pointers to lights
 
-	AmbientLight ambientLight(glm::vec3(0.1f, 0.1f, 0.1f));
-	
-	DirectionalLight directionLight(
-		glm::vec3(0.2f, 0.2f, 0.2f),//ambiente
-		glm::vec3(1.0f, 1.0f, 1.0f),//diffuse
-		glm::vec3(1.0f, 1.0f, 1.0f), //specular
-		glm::vec3(0.0f, 0.0f, 0.0f));//direction
+	// Initialize lights
+	light_Ptr[0] = new AmbientLight(glm::vec3(0.1f, 0.1f, 0.1f));
 
-	SpotLight spotLight(
-		glm::vec3(0.1f, 0.1f, 0.1f),//ambiente
-		glm::vec3(1.0f, 1.0f, 1.0f),//diffuse
-		glm::vec3(1.0f, 1.0f, 1.0f),//specular
-		glm::vec3(0.0, 10.0f, 0.0f),//position
-		glm::vec3(0.0f, -1.0f, 0.0f),//direction
-		1.0f,	//constant
-		0.045f,	//linear
-		0.0075f,//quadratic
-		10.5f,	//spout cut off
-		12.0f);	//spot exponent
-
-	PointLight pointLight(
-		glm::vec3(0.1f, 0.1f, 0.1f),//ambiente
-		glm::vec3(1.0f, 1.0f, 1.0f),//diffuse
-		glm::vec3(1.0f, 1.0f, 1.0f),//specular
-		glm::vec3(0.0f, 0.0f, 5.0f),//position
-		1.0f,	//constant
-		0.045f,	//linear
-		0.0075f//quadratic
+	light_Ptr[1] = new DirectionalLight(
+		glm::vec3(0.2f, 0.2f, 0.2f),  // ambient
+		glm::vec3(1.0f, 1.0f, 1.0f),  // diffuse
+		glm::vec3(1.0f, 1.0f, 1.0f),  // specular
+		glm::vec3(0.0f, 0.0f, 0.0f)   // direction
+	);
+	light_Ptr[2] = new SpotLight(
+		glm::vec3(0.1f, 0.1f, 0.1f),  // ambient
+		glm::vec3(1.0f, 1.0f, 1.0f),  // diffuse
+		glm::vec3(1.0f, 1.0f, 1.0f),  // specular
+		glm::vec3(0.0, 10.0f, 0.0f),  // position
+		glm::vec3(0.0f, -1.0f, 0.0f), // direction
+		1.0f,                          // constant
+		0.045f,                        // linear
+		0.0075f,                       // quadratic
+		10.5f,                         // spout cut off
+		12.0f                          // spot exponent
+	);
+	light_Ptr[3] = new PointLight(
+		glm::vec3(0.1f, 0.1f, 0.1f),  // ambient
+		glm::vec3(1.0f, 1.0f, 1.0f),  // diffuse
+		glm::vec3(1.0f, 1.0f, 1.0f),  // specular
+		glm::vec3(0.0f, 0.0f, 5.0f),  // position
+		1.0f,                          // constant
+		0.06f,                        // linear
+		0.02f                        // quadratic
 	);
 
+	for (int i=0; i < 4; i++) {
 
-	light_Ptr[0] = &ambientLight;
-	light_Ptr[1] = &directionLight;
-	light_Ptr[2] = &spotLight;
-	light_Ptr[3] = &pointLight;
+		light_Ptr[i]->UseLight(&shader);
 
-
-	/*for (int i=0; i < 4; i++) {
-
-		light_Ptr[i]->UseLight(shader);
-
-	}*/
+	}
 
 #pragma endregion
 
 	
 	SetUniforms(shader);
-	//SetUniforms(table_shader);
-
-
-
-
+	
+	
+	
 	glEnable(GL_DEPTH_TEST);
 
 	glm::vec3 world_position(3.0f, 0.0f, 6.0f);
-	//	float offset[5] = {-5.0f, -2.0f, 0.0f, 2.0f, 5.0f};
-	float offset[2] = { -5.0f, 5.0f };
+
+
+	float offsetX[15] = { -5.0f,-2.5f,0.0f,2.5f, 5.0f,	-3.75f,-1.25f, 1.25f, -3.75f, 		-2.5f, 0.0f, 2.5f,		-1.25f, 1.25f,		0.0f};
+	float offsetZ[15] = { 0.0f, 0.0f, 0.0f, 0.0f, 0.0f,		2.5f, 2.4f, 2.5f, 2.5f, 		5.0f, 5.0f,5.0f,		7.5f, 7.5f,		10.0f};
 
 
 	int j = 0;
+	
 	Physics physics;
-
-
-
+	
 	std::vector<glm::mat4> ModelViews;
 
 	for (int i = 0; i < MODEL_COUNT; i++) {
@@ -328,6 +280,7 @@ int main() {
 	int factor = 1;
 
 	Mouse mouse;
+	glm::mat4 rotation = glm::mat4(1.0f);
 
 	while (!glfwWindowShouldClose(window))
 	{
@@ -349,14 +302,7 @@ int main() {
 		shader.SetUniform1i("pointLightOn", point);
 		shader.SetUniform1i("directionalLightOn", dir);
 		shader.SetUniform1i("ambientLightOn", amb);
-		/*
-		table_shader.Bind();
-		table_shader.SetUniform1i("spotLightOn", spot);
-		table_shader.SetUniform1i("pointLightOn", point);
-		table_shader.SetUniform1i("directionalLightOn", dir);
-		table_shader.SetUniform1i("ambientLightOn", amb);
-		table_shader.Unbind();*/
-
+		
 		glm::vec3 translation;
 
 
@@ -365,25 +311,34 @@ int main() {
 		glm::quat quaternionX = glm::angleAxis(mouse.angleX, glm::vec3(1.0, 0.0f, 0.0f));
 
 		shader.SetUniform1i("IsTable", false);
+	
+		
 		for (int i = 0; i < MODEL_COUNT; i++)
 		{
 
 
 
-			translation = glm::vec3(offset[i], 0, 0);
+			translation = glm::vec3(offsetX[i], 0, offsetZ[i]);
+
 
 			if (!physics.CheckCollisions(ModelViews[i], ModelViews))//check collision 
 			{
-				if (i == 0)
-				{
-					translation = glm::vec3(offset[i] += 0.01f*factor, 0, 0);
+			
+				if (isMoving) {
+
+					if (i == 0)
+					{
+						translation = glm::vec3(offsetX[i] += 0.01f, 0, offsetZ[i]);
+					}
 				}
 			}
 			else 
 			{
-				translation = glm::vec3(offset[i] * factor, 0, 0);
+				translation = glm::vec3(offsetX[i], 0, offsetZ[i]);
 			}
 			model = glm::translate(glm::mat4(1.0f), translation);
+
+
 
 			model = glm::toMat4(quaternionY) * model;
 			model = glm::toMat4(quaternionX) * model;
@@ -418,7 +373,9 @@ int main() {
 			}
 			
 
-				buffer.Draw(VAOs[i], models[i].getVertexCount(), shader);
+			Textures[i].Bind();
+
+			buffer.Draw(VAOs[i], models[i].VertexCount, shader);
 
 		}
 
@@ -427,7 +384,7 @@ int main() {
 		translation = glm::vec3(0.0f, -4.0f, 0.0f);
 		
 
-		model = glm::scale(glm::mat4(1.0f), glm::vec3(5.0f, 0.5f, 3.5f));
+		model = glm::scale(glm::mat4(1.0f), glm::vec3(15.0f, 0.5f, 30.0f));
 		model = glm::translate(model, translation);
 
 		model = glm::toMat4(quaternionY) * model;
@@ -449,7 +406,7 @@ int main() {
 
 		shader.SetUniform1i("IsTable", true);
 
-		buffer.Draw(VAO_table, Table.getVertexCount(), shader);
+		buffer.Draw(VAO_table, Table.VertexCount, shader);
 		
 		
 		
@@ -467,9 +424,6 @@ int main() {
 	return 0;
 }
 
-void print_error(int error, const char* description) {
-	std::cout << description << std::endl;
-}
 
 void SetUniforms(Shader shader) {
 
@@ -495,7 +449,7 @@ void SetUniforms(Shader shader) {
 
 	//Fonte de luz holofote 
 	shader.SetUniform3f("spotLight.position", 0.0, 10.0f, 0.0f);
-	shader.SetUniform3f("spotLight.ambient", 0.1f, 0.1f, 0.1f);
+	shader.SetUniform3f("spotLight.ambient", 0.3f, 0.3f, 0.3f);
 	shader.SetUniform3f("spotLight.diffuse", 1.0f, 1.0f, 1.0f);
 	shader.SetUniform3f("spotLight.specular", 1.0f, 1.0f, 1.0f);
 	shader.SetUniform1f("spotLight.constant", 1.0f);
@@ -509,6 +463,23 @@ void SetUniforms(Shader shader) {
 
 }
 
+
+void Install(InstallStruct pack)
+{
+
+	if (pack.objFile->material.texture != "X") {
+		std::string image_path = "Texture/" + pack.objFile->material.texture;
+		pack.text->LateInit(image_path);
+	}
+
+	pack.vbo->LateInit(&pack.objFile->meshVector[0], pack.objFile->meshVector.size() * sizeof(glm::vec3));
+
+	pack.vao->AddBuffer(*pack.vbo, *pack.layout);
+
+	pack.vao->Bind();
+}
+
+#pragma region control callbacks
 
 
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
@@ -532,7 +503,35 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 	if (key == GLFW_KEY_M && action == GLFW_PRESS) {
 		material = !material;
 	}
-	if (key == GLFW_KEY_C && action == GLFW_PRESS) {
+	if (key == GLFW_KEY_SPACE && action == GLFW_PRESS) {
+		isMoving = true;
 	}
+
+	
 }
 
+
+
+void scrollCallback(GLFWwindow* window, double xoffset, double yoffset) {
+	//zoom in
+	if (yoffset == 1) {
+
+		ZOOM -= fabs(ZOOM) * 0.1f;
+	}
+	//zoom out
+	else if (yoffset == -1) {
+
+		ZOOM += fabs(ZOOM) * 0.1f;
+
+	}
+
+}
+
+
+#pragma endregion
+
+
+
+void print_error(int error, const char* description) {
+	std::cout << description << std::endl;
+}

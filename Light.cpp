@@ -6,7 +6,7 @@ Light::Light()
 
 }
 
-void Light::UseLight(Shader shader)
+void Light::UseLight(Shader* shader)
 {
 
 }
@@ -24,15 +24,15 @@ PointLight::PointLight(glm::vec3 _ambient, glm::vec3 _diffuse,
 	_quadratic = quadratic;
 }
 
-void PointLight::UseLight(Shader shader)
+void PointLight::UseLight(Shader *shader)
 {
-	shader.SetUniformVec3("pointLight.position", position);
-	shader.SetUniformVec3("pointLight.ambient", ambient);
-	shader.SetUniformVec3("pointLight.diffuse", diffuse);
-	shader.SetUniformVec3("pointLight.specular", specular);
-	shader.SetUniform1f("pointLight.constant", constant);
-	shader.SetUniform1f("pointLight.linear", linear);
-	shader.SetUniform1f("pointLight.quadratic", quadratic);
+	shader->SetUniformVec3("pointLight.position", position);
+	shader->SetUniformVec3("pointLight.ambient", ambient);
+	shader->SetUniformVec3("pointLight.diffuse", diffuse);
+	shader->SetUniformVec3("pointLight.specular", specular);
+	shader->SetUniform1f("pointLight.constant", constant);
+	shader->SetUniform1f("pointLight.linear", linear);
+	shader->SetUniform1f("pointLight.quadratic", quadratic);
 }
 
 SpotLight::SpotLight(glm::vec3 _ambient, glm::vec3 _diffuse,
@@ -52,21 +52,18 @@ SpotLight::SpotLight(glm::vec3 _ambient, glm::vec3 _diffuse,
 	spotDirection = spotDirection;
 }
 
-void SpotLight::UseLight(Shader shader)
+void SpotLight::UseLight(Shader* shader)
 {
-	shader.SetUniformVec3("spotLight.position",position);
-	shader.SetUniformVec3("spotLight.ambient", ambient);
-	shader.SetUniformVec3("spotLight.diffuse", diffuse);
-	shader.SetUniformVec3("spotLight.specular", specular);
-
-	shader.SetUniform1f("spotLight.constant", constant);
-	shader.SetUniform1f("spotLight.linear", linear);
-	shader.SetUniform1f("spotLight.quadratic", quadratic);
-
-	shader.SetUniform1f("spotLight.spotCutoff", cos(glm::radians(spotCutoff)));
-	shader.SetUniform1f("spotLight.spotExponent", cos(glm::radians(spotExponent)));
-
-	shader.SetUniformVec3("spotLight.spotDirection", spotDirection);
+	shader->SetUniformVec3("spotLight.position",position);
+	shader->SetUniformVec3("spotLight.ambient", ambient);
+	shader->SetUniformVec3("spotLight.diffuse", diffuse);
+	shader->SetUniformVec3("spotLight.specular", specular);
+	shader->SetUniform1f("spotLight.constant", constant);
+	shader->SetUniform1f("spotLight.linear", linear);
+	shader->SetUniform1f("spotLight.quadratic", quadratic);
+	shader->SetUniform1f("spotLight.spotCutoff", cos(glm::radians(spotCutoff)));
+	shader->SetUniform1f("spotLight.spotExponent", cos(glm::radians(spotExponent)));
+	shader->SetUniformVec3("spotLight.spotDirection", spotDirection);
 }
 
 DirectionalLight::DirectionalLight(glm::vec3 _ambient, glm::vec3 _diffuse,
@@ -79,12 +76,12 @@ DirectionalLight::DirectionalLight(glm::vec3 _ambient, glm::vec3 _diffuse,
 }
 
 
-void DirectionalLight::UseLight(Shader shader)
+void DirectionalLight::UseLight(Shader *shader)
 {
-	shader.SetUniformVec3("directionalLight.direction", direction);
-	shader.SetUniformVec3("directionalLight.ambient", ambient);
-	shader.SetUniformVec3("directionalLight.diffuse", diffuse);
-	shader.SetUniformVec3("directionalLight.specular",specular);
+	shader->SetUniformVec3("directionalLight.direction", direction);
+	shader->SetUniformVec3("directionalLight.ambient", ambient);
+	shader->SetUniformVec3("directionalLight.diffuse", diffuse);
+	shader->SetUniformVec3("directionalLight.specular",specular);
 }
 
 AmbientLight::AmbientLight(glm::vec3 _ambient)
@@ -92,7 +89,8 @@ AmbientLight::AmbientLight(glm::vec3 _ambient)
 	_ambient = ambient;
 }
 
-void AmbientLight::UseLight(Shader shader)
+void AmbientLight::UseLight(Shader *shader)
 {
-	shader.SetUniformVec3("ambientLight.ambient", ambient);
+	shader->SetUniformVec3("ambientLight.ambient", ambient);
 }
+

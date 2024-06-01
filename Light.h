@@ -8,7 +8,7 @@ class Light
 public:
 	Light();
 
-	virtual void UseLight(Shader shader);
+	virtual void UseLight(Shader *shader);
 
 protected:
 
@@ -21,9 +21,9 @@ protected:
 class AmbientLight:public Light {
 
 public:
-	AmbientLight(glm::vec3 ambient);
+	AmbientLight(glm::vec3 _ambient);
 
-	void UseLight(Shader shader);
+	void UseLight(Shader *shader);
 private:
 };
 
@@ -33,7 +33,7 @@ public:
 	DirectionalLight(glm::vec3 _ambient, glm::vec3 _diffuse,
 		glm::vec3 _specular, glm::vec3 _direction);
 
-	void UseLight(Shader shader);
+	void UseLight(Shader* shader);
 private:
 	glm::vec3 direction;	
 };
@@ -45,7 +45,7 @@ public:
 		glm::vec3 _specular, glm::vec3 _position,
 		float _constant, float _linear, float _quadratic);
 
-	void UseLight(Shader shader);
+	void UseLight(Shader *shader);
 private:
 	glm::vec3 position;
 
@@ -63,7 +63,7 @@ public:
 		float _spotExponent);
 	
 
-	void UseLight(Shader shader);
+	void UseLight(Shader *shader);
 
 private:
 	glm::vec3 position;		

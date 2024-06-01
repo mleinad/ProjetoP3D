@@ -38,7 +38,6 @@ bool Physics::CheckCollisions(glm::mat4 CurrentModelView, std::vector<glm::mat4>
         }
         if (CheckCollisionIndevidual(CurrentModelView, modelView)) {
             // Handle collision
-            std::cout << "Collision detected!" << std::endl;
             return true; 
         }
     }

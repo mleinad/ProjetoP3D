@@ -52,18 +52,18 @@ public:
 
     Object3D(const char* path, bool _mtl);
 
-    int getVertexCount();
     
     void printInfo(int numLines = -1); // Default to -1, imprime todas as linhas
 
     //nao utilizado 
     std::vector<Mesh> meshStruct;
-
+    int VertexCount;
     std::vector<glm::vec3>meshVector;
     Material material;
 
 private:
 
+    int getVertexCount();
     bool loadOBJ(const char* path);
     bool loadMTL(const char* path);
     bool loadDefaultMTL();

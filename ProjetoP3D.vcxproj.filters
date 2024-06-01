@@ -54,6 +54,9 @@
     <ClCompile Include="Physics.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="InputControls.h">
@@ -95,6 +98,9 @@
     <ClInclude Include="Mesh.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\shader.frag">
@@ -112,6 +118,48 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="Texture\PoolBalluv1.jpg">
+      <Filter>Source Files\Textures</Filter>
+    </Image>
+    <Image Include="Texture\PoolBalluv2.jpg">
+      <Filter>Source Files\Textures</Filter>
+    </Image>
+    <Image Include="Texture\PoolBalluv3.jpg">
+      <Filter>Source Files\Textures</Filter>
+    </Image>
+    <Image Include="Texture\PoolBalluv4.jpg">
+      <Filter>Source Files\Textures</Filter>
+    </Image>
+    <Image Include="Texture\PoolBalluv5.jpg">
+      <Filter>Source Files\Textures</Filter>
+    </Image>
+    <Image Include="Texture\PoolBalluv6.jpg">
+      <Filter>Source Files\Textures</Filter>
+    </Image>
+    <Image Include="Texture\PoolBalluv7.jpg">
+      <Filter>Source Files\Textures</Filter>
+    </Image>
+    <Image Include="Texture\PoolBalluv8.jpg">
+      <Filter>Source Files\Textures</Filter>
+    </Image>
+    <Image Include="Texture\PoolBalluv9.jpg">
+      <Filter>Source Files\Textures</Filter>
+    </Image>
+    <Image Include="Texture\PoolBalluv10.jpg">
+      <Filter>Source Files\Textures</Filter>
+    </Image>
+    <Image Include="Texture\PoolBalluv11.jpg">
+      <Filter>Source Files\Textures</Filter>
+    </Image>
+    <Image Include="Texture\PoolBalluv12.jpg">
+      <Filter>Source Files\Textures</Filter>
+    </Image>
+    <Image Include="Texture\PoolBalluv13.jpg">
+      <Filter>Source Files\Textures</Filter>
+    </Image>
+    <Image Include="Texture\PoolBalluv14.jpg">
+      <Filter>Source Files\Textures</Filter>
+    </Image>
+    <Image Include="Texture\PoolBalluv15.jpg">
       <Filter>Source Files\Textures</Filter>
     </Image>
   </ItemGroup>

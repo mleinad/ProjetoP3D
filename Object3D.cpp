@@ -4,6 +4,8 @@ Object3D::Object3D(const char* path)
 {
 	loadOBJ(path);
 
+	VertexCount = getVertexCount();
+
 	std::string mp = "MTL/" + material.mtl_path;
 	loadMTL(mp.c_str());
 
@@ -13,6 +15,7 @@ Object3D::Object3D(const char* path)
 Object3D::Object3D(const char* path, bool _mtl)
 {
 	loadOBJ(path);
+	VertexCount = getVertexCount();
 	loadDefaultMTL();
 }
 
@@ -24,7 +27,7 @@ Object3D::~Object3D()
 
 int Object3D::getVertexCount()
 {
-	return meshVector.size();
+	return meshVector.size()/3;
 }
 
 bool Object3D ::loadOBJ(const char* path){
@@ -190,6 +193,7 @@ bool Object3D::loadMTL(const char* path)
 			char temp_buffer[128]; 
 			fscanf(file, "%127s", temp_buffer); 
 			temp_text = temp_buffer;
+			material.texture = temp_text;
 
 		}
 	}
@@ -200,7 +204,7 @@ bool Object3D::loadMTL(const char* path)
 	material.difuse = temp_difuse;
 	material.specular = temp_specular;
 	material.ambient = temp_ambient;
-	material.texture = temp_text;
+	
 
 	return true;
 

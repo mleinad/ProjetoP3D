@@ -127,6 +127,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Camera.cpp" />
     <ClCompile Include="InputControls.cpp" />
     <ClCompile Include="Light.cpp" />
     <ClCompile Include="Luis\IndexBuffer.cpp" />
@@ -140,6 +141,7 @@
     <ClCompile Include="Texture.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Camera.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="InputControls.h" />
     <ClInclude Include="Light.h" />
@@ -162,6 +164,20 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="Texture\PoolBalluv1.jpg" />
+    <Image Include="Texture\PoolBalluv10.jpg" />
+    <Image Include="Texture\PoolBalluv11.jpg" />
+    <Image Include="Texture\PoolBalluv12.jpg" />
+    <Image Include="Texture\PoolBalluv13.jpg" />
+    <Image Include="Texture\PoolBalluv14.jpg" />
+    <Image Include="Texture\PoolBalluv15.jpg" />
+    <Image Include="Texture\PoolBalluv2.jpg" />
+    <Image Include="Texture\PoolBalluv3.jpg" />
+    <Image Include="Texture\PoolBalluv4.jpg" />
+    <Image Include="Texture\PoolBalluv5.jpg" />
+    <Image Include="Texture\PoolBalluv6.jpg" />
+    <Image Include="Texture\PoolBalluv7.jpg" />
+    <Image Include="Texture\PoolBalluv8.jpg" />
+    <Image Include="Texture\PoolBalluv9.jpg" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
