@@ -129,9 +129,9 @@ bool Object3D ::loadOBJ(const char* path){
 		tempMesh.normals = normal;
 		tempMesh.uvs = uv;
 
-		meshVector.push_back(glm::vec3(uv.x, uv.y, 1.0f));
-		meshVector.push_back(normal);
 		meshVector.push_back(vertex);
+		meshVector.push_back(normal);
+		meshVector.push_back(glm::vec3(uv.x, uv.y, 1.0f));
 
 		meshStruct.push_back(tempMesh);
 	}

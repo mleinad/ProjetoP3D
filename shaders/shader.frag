@@ -4,7 +4,6 @@ uniform mat4 Model;
 uniform mat4 View;
 uniform mat4 ModelView;
 
-
 out vec4 color;
 
 
@@ -82,7 +81,7 @@ uniform sampler2D Texture;
 in vec3 vPositionEyeSpace;
 in vec3 vNormalEyeSpace;
 //layout (location = 2) in vec2 InTextCoord;
-in vec3 InTextCoord;
+in vec2 outTextCoord;
 
 in vec3 vPositionWorldSpace;
 in vec3  vNormalWorldSpace;
@@ -143,21 +142,20 @@ void main()
 		light3 = vec4(0,0,0,0);
 	}
 
-	//vec4 textColor = texture(Texture, InTextCoord);
+	vec4 textColor = texture(Texture, outTextCoord);
 
 
 	//exprimentar
 
 	if(IsTable)
 	{
-		color = vec4(InTextCoord.x,InTextCoord.y ,1.0f,1.0f) *( emissive + (ambient/4) + light1 + light2 +light3);
+		color = vec4(1.0f,1.0f ,1.0f,1.0f) *( emissive + (ambient/4) + light1 + light2 +light3);
 	}
 	else
 	{
 
-	//color = textColor * (emissive + (ambient/4) + light1 + light2 +light3);
+	color = textColor * (emissive + (ambient/4) + light1 + light2 +light3);
 	
-	color = (emissive + (ambient/4) + light1 + light2 +light3);
 	}
 	
 }

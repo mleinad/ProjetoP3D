@@ -182,7 +182,9 @@ int main() {
 	texture.Bind();
 
 
-
+	//for (int i = 0; i < Table.meshVector.size();i++) {
+	//	std::cout << "  (" << Table.meshVector[i].x << ", " << Table.meshVector[i].y << ", " << Table.meshVector[i].z << ")" << std::endl;
+	//}
 	shader.Bind();
 	
 //	table_shader.Unbind();
@@ -321,8 +323,8 @@ int main() {
 
 	int factor = 1;
 
+	
 
-	// Push main
 	while (!glfwWindowShouldClose(window))
 	{
 
@@ -335,6 +337,8 @@ int main() {
 
 		world_position.z = ZOOM;
 
+		//para o spotlight nao seguir a camara
+		shader.SetUniformMat4f("View", view);
 
 		//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 		shader.SetUniform1i("spotLightOn", spot);
