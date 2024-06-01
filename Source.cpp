@@ -1,5 +1,7 @@
 #include <glm/gtc/type_ptr.hpp> // value_ptr
 #include <glm/gtc/matrix_transform.hpp> // translate, rotate, scale, perspective, ...
+#define GLM_ENABLE_EXPERIMENTAL
+#include <glm/gtx/quaternion.hpp>
 
 #pragma comment(lib, "glew32s.lib")
 #pragma comment(lib, "glfw3.lib")
@@ -25,6 +27,7 @@
 #include "Light.h"
 #include "Texture.h"
 #include "Physics.h"
+#include "Camera.h"
 
 extern "C"
 {
@@ -117,8 +120,8 @@ int main() {
 
 	
 
-	Shader shader("shaders/shader.frag", "shaders/shader.vert");
-	//Shader shader("../../ProjetoP3D/ProjetoP3D/shaders/shader.frag", "../../ProjetoP3D/ProjetoP3D/shaders/shader.vert");
+	//Shader shader("shaders/shader.frag", "shaders/shader.vert");
+	Shader shader("../../ProjetoP3D/ProjetoP3D/shaders/shader.frag", "../../ProjetoP3D/ProjetoP3D/shaders/shader.vert");
 
 		VertexBufferLayout layout_v;
 
@@ -133,7 +136,8 @@ int main() {
 
 
 
-	std::string image_path = "Texture/PoolBalluv1.jpg";	
+	//std::string image_path = "Texture/PoolBalluv1.jpg";
+	std::string image_path = "../../ProjetoP3D/ProjetoP3D/Texture/PoolBalluv1.jpg";
 	Texture texture(image_path);
 
 
@@ -323,7 +327,7 @@ int main() {
 
 	int factor = 1;
 
-	
+	Mouse mouse;
 
 	while (!glfwWindowShouldClose(window))
 	{
@@ -356,6 +360,10 @@ int main() {
 		glm::vec3 translation;
 
 
+		mouse.CamMove(window);
+		glm::quat quaternionY = glm::angleAxis(mouse.angleY, glm::vec3(0.0f, 1.0f, 0.0f));
+		glm::quat quaternionX = glm::angleAxis(mouse.angleX, glm::vec3(1.0, 0.0f, 0.0f));
+
 		shader.SetUniform1i("IsTable", false);
 		for (int i = 0; i < MODEL_COUNT; i++)
 		{
@@ -376,6 +384,9 @@ int main() {
 				translation = glm::vec3(offset[i] * factor, 0, 0);
 			}
 			model = glm::translate(glm::mat4(1.0f), translation);
+
+			model = glm::toMat4(quaternionY) * model;
+			model = glm::toMat4(quaternionX) * model;
 
 
 			ModelViews[i] = view * model;
@@ -418,6 +429,9 @@ int main() {
 
 		model = glm::scale(glm::mat4(1.0f), glm::vec3(5.0f, 0.5f, 3.5f));
 		model = glm::translate(model, translation);
+
+		model = glm::toMat4(quaternionY) * model;
+		model = glm::toMat4(quaternionX) * model;
 
 		ModelView = view * model;
 		NormalMatrix = glm::inverseTranspose(glm::mat3(ModelView));

@@ -3,6 +3,14 @@
   "WorkspaceRootPath": "C:\\Users\\luisq\\OneDrive\\Ambiente de Trabalho\\IPCA\\3 ano\\2 Semestre\\P3D\\ProjetoP3D\\ProjetoP3D\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\luisq\\OneDrive\\Ambiente de Trabalho\\IPCA\\3 ano\\2 Semestre\\P3D\\ProjetoP3D\\ProjetoP3D\\Camera.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:Camera.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\luisq\\OneDrive\\Ambiente de Trabalho\\IPCA\\3 ano\\2 Semestre\\P3D\\ProjetoP3D\\ProjetoP3D\\Camera.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:Camera.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\luisq\\OneDrive\\Ambiente de Trabalho\\IPCA\\3 ano\\2 Semestre\\P3D\\ProjetoP3D\\ProjetoP3D\\Luis\\Shader.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
       "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:Luis\\Shader.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     },
@@ -102,61 +110,37 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 9,
+          "SelectedChildIndex": 0,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "shader.vert",
-              "DocumentMoniker": "C:\\Users\\luisq\\OneDrive\\Ambiente de Trabalho\\IPCA\\3 ano\\2 Semestre\\P3D\\ProjetoP3D\\ProjetoP3D\\shaders\\shader.vert",
-              "RelativeDocumentMoniker": "shaders\\shader.vert",
-              "ToolTip": "C:\\Users\\luisq\\OneDrive\\Ambiente de Trabalho\\IPCA\\3 ano\\2 Semestre\\P3D\\ProjetoP3D\\ProjetoP3D\\shaders\\shader.vert",
-              "RelativeToolTip": "shaders\\shader.vert",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAACEAAAADAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
-              "WhenOpened": "2024-05-31T12:08:51.115Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 6,
-              "Title": "Physics.cpp",
-              "DocumentMoniker": "C:\\Users\\luisq\\OneDrive\\Ambiente de Trabalho\\IPCA\\3 ano\\2 Semestre\\P3D\\ProjetoP3D\\ProjetoP3D\\Physics.cpp",
-              "RelativeDocumentMoniker": "Physics.cpp",
-              "ToolTip": "C:\\Users\\luisq\\OneDrive\\Ambiente de Trabalho\\IPCA\\3 ano\\2 Semestre\\P3D\\ProjetoP3D\\ProjetoP3D\\Physics.cpp",
-              "RelativeToolTip": "Physics.cpp",
+              "DocumentIndex": 0,
+              "Title": "Camera.h",
+              "DocumentMoniker": "C:\\Users\\luisq\\OneDrive\\Ambiente de Trabalho\\IPCA\\3 ano\\2 Semestre\\P3D\\ProjetoP3D\\ProjetoP3D\\Camera.h",
+              "RelativeDocumentMoniker": "Camera.h",
+              "ToolTip": "C:\\Users\\luisq\\OneDrive\\Ambiente de Trabalho\\IPCA\\3 ano\\2 Semestre\\P3D\\ProjetoP3D\\ProjetoP3D\\Camera.h",
+              "RelativeToolTip": "Camera.h",
               "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
-              "WhenOpened": "2024-05-30T12:36:28.854Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 9,
-              "Title": "Light.h",
-              "DocumentMoniker": "C:\\Users\\luisq\\OneDrive\\Ambiente de Trabalho\\IPCA\\3 ano\\2 Semestre\\P3D\\ProjetoP3D\\ProjetoP3D\\Light.h",
-              "RelativeDocumentMoniker": "Light.h",
-              "ToolTip": "C:\\Users\\luisq\\OneDrive\\Ambiente de Trabalho\\IPCA\\3 ano\\2 Semestre\\P3D\\ProjetoP3D\\ProjetoP3D\\Light.h",
-              "RelativeToolTip": "Light.h",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAEwAAAACAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
-              "WhenOpened": "2024-05-30T09:33:45.022Z"
+              "WhenOpened": "2024-05-31T14:23:20.261Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 10,
-              "Title": "Light.cpp",
-              "DocumentMoniker": "C:\\Users\\luisq\\OneDrive\\Ambiente de Trabalho\\IPCA\\3 ano\\2 Semestre\\P3D\\ProjetoP3D\\ProjetoP3D\\Light.cpp",
-              "RelativeDocumentMoniker": "Light.cpp",
-              "ToolTip": "C:\\Users\\luisq\\OneDrive\\Ambiente de Trabalho\\IPCA\\3 ano\\2 Semestre\\P3D\\ProjetoP3D\\ProjetoP3D\\Light.cpp",
-              "RelativeToolTip": "Light.cpp",
+              "DocumentIndex": 1,
+              "Title": "Camera.cpp",
+              "DocumentMoniker": "C:\\Users\\luisq\\OneDrive\\Ambiente de Trabalho\\IPCA\\3 ano\\2 Semestre\\P3D\\ProjetoP3D\\ProjetoP3D\\Camera.cpp",
+              "RelativeDocumentMoniker": "Camera.cpp",
+              "ToolTip": "C:\\Users\\luisq\\OneDrive\\Ambiente de Trabalho\\IPCA\\3 ano\\2 Semestre\\P3D\\ProjetoP3D\\ProjetoP3D\\Camera.cpp",
+              "RelativeToolTip": "Camera.cpp",
               "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
-              "WhenOpened": "2024-05-30T09:33:42.859Z"
+              "WhenOpened": "2024-05-31T14:23:01.882Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 7,
               "Title": "InputControls.cpp",
               "DocumentMoniker": "C:\\Users\\luisq\\OneDrive\\Ambiente de Trabalho\\IPCA\\3 ano\\2 Semestre\\P3D\\ProjetoP3D\\ProjetoP3D\\InputControls.cpp",
               "RelativeDocumentMoniker": "InputControls.cpp",
@@ -164,12 +148,11 @@
               "RelativeToolTip": "InputControls.cpp",
               "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
-              "WhenOpened": "2024-05-30T09:33:06.832Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-05-30T09:33:06.832Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 8,
+              "DocumentIndex": 10,
               "Title": "InputControls.h",
               "DocumentMoniker": "C:\\Users\\luisq\\OneDrive\\Ambiente de Trabalho\\IPCA\\3 ano\\2 Semestre\\P3D\\ProjetoP3D\\ProjetoP3D\\InputControls.h",
               "RelativeDocumentMoniker": "InputControls.h",
@@ -181,7 +164,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
+              "DocumentIndex": 9,
               "Title": "Texture.cpp",
               "DocumentMoniker": "C:\\Users\\luisq\\OneDrive\\Ambiente de Trabalho\\IPCA\\3 ano\\2 Semestre\\P3D\\ProjetoP3D\\ProjetoP3D\\Texture.cpp",
               "RelativeDocumentMoniker": "Texture.cpp",
@@ -193,7 +176,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 5,
               "Title": "Source.cpp",
               "DocumentMoniker": "C:\\Users\\luisq\\OneDrive\\Ambiente de Trabalho\\IPCA\\3 ano\\2 Semestre\\P3D\\ProjetoP3D\\ProjetoP3D\\Source.cpp",
               "RelativeDocumentMoniker": "Source.cpp",
@@ -201,12 +184,11 @@
               "RelativeToolTip": "Source.cpp",
               "ViewState": "AQIAAAAAAAAAAAAAAAAAAHQAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
-              "WhenOpened": "2024-05-29T17:56:35.53Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-05-29T17:56:35.53Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 11,
+              "DocumentIndex": 13,
               "Title": "Texture.h",
               "DocumentMoniker": "C:\\Users\\luisq\\OneDrive\\Ambiente de Trabalho\\IPCA\\3 ano\\2 Semestre\\P3D\\ProjetoP3D\\ProjetoP3D\\Luis\\Texture.h",
               "RelativeDocumentMoniker": "Luis\\Texture.h",
@@ -218,7 +200,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 2,
               "Title": "Shader.cpp",
               "DocumentMoniker": "C:\\Users\\luisq\\OneDrive\\Ambiente de Trabalho\\IPCA\\3 ano\\2 Semestre\\P3D\\ProjetoP3D\\ProjetoP3D\\Luis\\Shader.cpp",
               "RelativeDocumentMoniker": "Luis\\Shader.cpp",
@@ -231,7 +213,55 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 8,
+              "Title": "Physics.cpp",
+              "DocumentMoniker": "C:\\Users\\luisq\\OneDrive\\Ambiente de Trabalho\\IPCA\\3 ano\\2 Semestre\\P3D\\ProjetoP3D\\ProjetoP3D\\Physics.cpp",
+              "RelativeDocumentMoniker": "Physics.cpp",
+              "ToolTip": "C:\\Users\\luisq\\OneDrive\\Ambiente de Trabalho\\IPCA\\3 ano\\2 Semestre\\P3D\\ProjetoP3D\\ProjetoP3D\\Physics.cpp",
+              "RelativeToolTip": "Physics.cpp",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2024-05-30T12:36:28.854Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "Light.h",
+              "DocumentMoniker": "C:\\Users\\luisq\\OneDrive\\Ambiente de Trabalho\\IPCA\\3 ano\\2 Semestre\\P3D\\ProjetoP3D\\ProjetoP3D\\Light.h",
+              "RelativeDocumentMoniker": "Light.h",
+              "ToolTip": "C:\\Users\\luisq\\OneDrive\\Ambiente de Trabalho\\IPCA\\3 ano\\2 Semestre\\P3D\\ProjetoP3D\\ProjetoP3D\\Light.h",
+              "RelativeToolTip": "Light.h",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAEwAAAACAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2024-05-30T09:33:45.022Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 12,
+              "Title": "Light.cpp",
+              "DocumentMoniker": "C:\\Users\\luisq\\OneDrive\\Ambiente de Trabalho\\IPCA\\3 ano\\2 Semestre\\P3D\\ProjetoP3D\\ProjetoP3D\\Light.cpp",
+              "RelativeDocumentMoniker": "Light.cpp",
+              "ToolTip": "C:\\Users\\luisq\\OneDrive\\Ambiente de Trabalho\\IPCA\\3 ano\\2 Semestre\\P3D\\ProjetoP3D\\ProjetoP3D\\Light.cpp",
+              "RelativeToolTip": "Light.cpp",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2024-05-30T09:33:42.859Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "shader.vert",
+              "DocumentMoniker": "C:\\Users\\luisq\\OneDrive\\Ambiente de Trabalho\\IPCA\\3 ano\\2 Semestre\\P3D\\ProjetoP3D\\ProjetoP3D\\shaders\\shader.vert",
+              "RelativeDocumentMoniker": "shaders\\shader.vert",
+              "ToolTip": "C:\\Users\\luisq\\OneDrive\\Ambiente de Trabalho\\IPCA\\3 ano\\2 Semestre\\P3D\\ProjetoP3D\\ProjetoP3D\\shaders\\shader.vert",
+              "RelativeToolTip": "shaders\\shader.vert",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAACEAAAADAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
+              "WhenOpened": "2024-05-31T12:08:51.115Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
               "Title": "shader.frag",
               "DocumentMoniker": "C:\\Users\\luisq\\OneDrive\\Ambiente de Trabalho\\IPCA\\3 ano\\2 Semestre\\P3D\\ProjetoP3D\\ProjetoP3D\\shaders\\shader.frag",
               "RelativeDocumentMoniker": "shaders\\shader.frag",
@@ -239,12 +269,11 @@
               "RelativeToolTip": "shaders\\shader.frag",
               "ViewState": "AQIAAAAAAAAAAAAAAAAAAPEAAAABAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
-              "WhenOpened": "2024-05-30T12:38:52.397Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-05-30T12:38:52.397Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 6,
               "Title": "Texture.h",
               "DocumentMoniker": "C:\\Users\\luisq\\OneDrive\\Ambiente de Trabalho\\IPCA\\3 ano\\2 Semestre\\P3D\\ProjetoP3D\\ProjetoP3D\\Texture.h",
               "RelativeDocumentMoniker": "Texture.h",
@@ -252,12 +281,11 @@
               "RelativeToolTip": "Texture.h",
               "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
-              "WhenOpened": "2024-05-30T09:36:18.993Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-05-30T09:36:18.993Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 13,
+              "DocumentIndex": 15,
               "Title": "Renderer.h",
               "DocumentMoniker": "C:\\Users\\luisq\\OneDrive\\Ambiente de Trabalho\\IPCA\\3 ano\\2 Semestre\\P3D\\ProjetoP3D\\ProjetoP3D\\Luis\\Renderer.h",
               "RelativeDocumentMoniker": "Luis\\Renderer.h",
@@ -269,7 +297,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 19,
+              "DocumentIndex": 21,
               "Title": "Renderer.cpp",
               "DocumentMoniker": "C:\\Users\\luisq\\OneDrive\\Ambiente de Trabalho\\IPCA\\3 ano\\2 Semestre\\P3D\\ProjetoP3D\\ProjetoP3D\\Luis\\Renderer.cpp",
               "RelativeDocumentMoniker": "Luis\\Renderer.cpp",
@@ -281,7 +309,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 12,
+              "DocumentIndex": 14,
               "Title": "IndexBuffer.h",
               "DocumentMoniker": "C:\\Users\\luisq\\OneDrive\\Ambiente de Trabalho\\IPCA\\3 ano\\2 Semestre\\P3D\\ProjetoP3D\\ProjetoP3D\\Luis\\IndexBuffer.h",
               "RelativeDocumentMoniker": "Luis\\IndexBuffer.h",
@@ -293,7 +321,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 18,
+              "DocumentIndex": 20,
               "Title": "IndexBuffer.cpp",
               "DocumentMoniker": "C:\\Users\\luisq\\OneDrive\\Ambiente de Trabalho\\IPCA\\3 ano\\2 Semestre\\P3D\\ProjetoP3D\\ProjetoP3D\\Luis\\IndexBuffer.cpp",
               "RelativeDocumentMoniker": "Luis\\IndexBuffer.cpp",
@@ -305,7 +333,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 16,
+              "DocumentIndex": 18,
               "Title": "VertexArray.h",
               "DocumentMoniker": "C:\\Users\\luisq\\OneDrive\\Ambiente de Trabalho\\IPCA\\3 ano\\2 Semestre\\P3D\\ProjetoP3D\\ProjetoP3D\\Luis\\VertexArray.h",
               "RelativeDocumentMoniker": "Luis\\VertexArray.h",
@@ -317,7 +345,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 17,
+              "DocumentIndex": 19,
               "Title": "VertexBuffer.h",
               "DocumentMoniker": "C:\\Users\\luisq\\OneDrive\\Ambiente de Trabalho\\IPCA\\3 ano\\2 Semestre\\P3D\\ProjetoP3D\\ProjetoP3D\\Luis\\VertexBuffer.h",
               "RelativeDocumentMoniker": "Luis\\VertexBuffer.h",
@@ -329,7 +357,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 15,
+              "DocumentIndex": 17,
               "Title": "VertexBufferLayout.h",
               "DocumentMoniker": "C:\\Users\\luisq\\OneDrive\\Ambiente de Trabalho\\IPCA\\3 ano\\2 Semestre\\P3D\\ProjetoP3D\\ProjetoP3D\\Luis\\VertexBufferLayout.h",
               "RelativeDocumentMoniker": "Luis\\VertexBufferLayout.h",
@@ -341,7 +369,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 14,
+              "DocumentIndex": 16,
               "Title": "Shader.h",
               "DocumentMoniker": "C:\\Users\\luisq\\OneDrive\\Ambiente de Trabalho\\IPCA\\3 ano\\2 Semestre\\P3D\\ProjetoP3D\\ProjetoP3D\\Luis\\Shader.h",
               "RelativeDocumentMoniker": "Luis\\Shader.h",
@@ -353,7 +381,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 20,
+              "DocumentIndex": 22,
               "Title": "Texture.cpp",
               "DocumentMoniker": "C:\\Users\\luisq\\OneDrive\\Ambiente de Trabalho\\IPCA\\3 ano\\2 Semestre\\P3D\\ProjetoP3D\\ProjetoP3D\\Luis\\Texture.cpp",
               "RelativeDocumentMoniker": "Luis\\Texture.cpp",
@@ -365,7 +393,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 21,
+              "DocumentIndex": 23,
               "Title": "VertexArray.cpp",
               "DocumentMoniker": "C:\\Users\\luisq\\OneDrive\\Ambiente de Trabalho\\IPCA\\3 ano\\2 Semestre\\P3D\\ProjetoP3D\\ProjetoP3D\\Luis\\VertexArray.cpp",
               "RelativeDocumentMoniker": "Luis\\VertexArray.cpp",
@@ -377,7 +405,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 22,
+              "DocumentIndex": 24,
               "Title": "VertexBuffer.cpp",
               "DocumentMoniker": "C:\\Users\\luisq\\OneDrive\\Ambiente de Trabalho\\IPCA\\3 ano\\2 Semestre\\P3D\\ProjetoP3D\\ProjetoP3D\\Luis\\VertexBuffer.cpp",
               "RelativeDocumentMoniker": "Luis\\VertexBuffer.cpp",
