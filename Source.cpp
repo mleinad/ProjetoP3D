@@ -55,6 +55,7 @@ void scrollCallback(GLFWwindow* window, double xoffset, double yoffset);
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
 
 
+Object3D Load(const std::string obj_model_filepath);
 
 
 
@@ -134,24 +135,25 @@ int main() {
 	Texture Textures[MODEL_COUNT];
 
 
-	for (int i = 0; i < MODEL_COUNT; i++) {
+	for (int i = 0; i< MODEL_COUNT; i++) {
 
 		InstallStruct installStruct;
 		
-		std::string fileName = "OBJ files/Ball" + std::to_string(i + 1) + ".obj";
+		std::string fileName = "OBJ files/Ball" + std::to_string(i+1) + ".obj";
 
-		Object3D model(fileName.c_str());
-
-		models.push_back(model);
+		models.push_back(Load(fileName));
 
 		installStruct.layout = &layout_v;
-		installStruct.objFile = &model;
+		installStruct.objFile = &models[i];
 		installStruct.vao = &VAOs[i];
 		installStruct.vbo = &VBOs[i];
 		installStruct.text = &Textures[i];
 
 		Install(installStruct);
 	}
+
+
+
 	
 	shader.Bind();
 
@@ -171,6 +173,11 @@ int main() {
 
 	shader.Bind();
 	
+
+
+
+
+
 
 	glm::mat4 projection = glm::perspective(glm::radians(45.0f),(float)videoMode->width/(float)videoMode->height, 0.1f, 1000.f);
 
@@ -261,16 +268,17 @@ int main() {
 
 	glm::vec3 world_position(3.0f, 0.0f, 6.0f);
 
-
-	float offsetX[15] = { -5.0f,-2.5f,0.0f,2.5f, 5.0f,	-3.75f,-1.25f, 1.25f, -3.75f, 		-2.5f, 0.0f, 2.5f,		-1.25f, 1.25f,		0.0f};
-	float offsetZ[15] = { 0.0f, 0.0f, 0.0f, 0.0f, 0.0f,		2.5f, 2.4f, 2.5f, 2.5f, 		5.0f, 5.0f,5.0f,		7.5f, 7.5f,		10.0f};
-
+									//1  2  3  4   5     6         7    8        9    10             11    12   13            14      15          16     
+	float offsetX[16] = { -5.0f,-2.5f,0.0f,2.5f, 5.0f,	-3.75f,-1.25f, 1.25f, -3.75f, 		-2.5f, 0.0f, 2.5f,		-1.25f, 1.25f,	0.0f,		0.0f};
+	float offsetZ[16] = {	0.0f, 0.0f, 0.0f, 0.0f, 0.0f,		2.5f, 2.4f, 2.5f, 2.5f, 		5.0f, 5.0f,5.0f,		7.5f, 7.5f,		10.0f, 	16.0f};
 
 	int j = 0;
 	
 	Physics physics;
 	
 	std::vector<glm::mat4> ModelViews;
+
+
 
 	for (int i = 0; i < MODEL_COUNT; i++) {
 		ModelViews.push_back(ModelView);
@@ -281,6 +289,7 @@ int main() {
 
 	Mouse mouse;
 	glm::mat4 rotation = glm::mat4(1.0f);
+	float angle =0.0f;
 
 	while (!glfwWindowShouldClose(window))
 	{
@@ -328,21 +337,29 @@ int main() {
 
 					if (i == 0)
 					{
+						angle += 0.1f;
 						translation = glm::vec3(offsetX[i] += 0.01f, 0, offsetZ[i]);
+						
+						rotation = glm::rotate(glm::mat4(1.0f), angle, glm::vec3(1.0f, 0.0f, 0.0f));
+
 					}
 				}
 			}
 			else 
 			{
+				//rotation = glm::mat4(0.0f);
 				translation = glm::vec3(offsetX[i], 0, offsetZ[i]);
 			}
+
+
+			
+			
+			//model = model * rotation;
 			model = glm::translate(glm::mat4(1.0f), translation);
-
-
 
 			model = glm::toMat4(quaternionY) * model;
 			model = glm::toMat4(quaternionX) * model;
-
+			shader.SetUniformMat4f("SpotLightModelView", view);
 
 			ModelViews[i] = view * model;
 			NormalMatrix = glm::inverseTranspose(glm::mat3(ModelViews[i]));
@@ -408,8 +425,6 @@ int main() {
 
 		buffer.Draw(VAO_table, Table.VertexCount, shader);
 		
-		
-		
 		//-------------------------------------------------------
 		
 
@@ -428,7 +443,7 @@ int main() {
 void SetUniforms(Shader shader) {
 
 	// Fonte de luz ambiente global
-	glm::vec3 amb (0.1f, 0.1f, 0.1f);
+	glm::vec3 amb (0.3f, 0.3f, 0.3f);
 	shader.SetUniformVec3("ambientLight.ambient", amb);
 
 	// Fonte de luz direcional
@@ -439,15 +454,15 @@ void SetUniforms(Shader shader) {
 
 	// Fonte de luz pontual #1
 	shader.SetUniform3f("pointLight.position", 0.0f, 0.0f, 5.0f);
-	shader.SetUniform3f("pointLight.ambient", 0.1f, 0.1f, 0.1f);
+	shader.SetUniform3f("pointLight.ambient", 0.2f, 0.2f, 0.2f);
 	shader.SetUniform3f("pointLight.diffuse", 1.0f, 1.0f, 1.0f);
 	shader.SetUniform3f("pointLight.specular", 1.0f, 1.0f, 1.0f);
 	shader.SetUniform1f("pointLight.constant", 1.0f);
-	shader.SetUniform1f("pointLight.linear", 0.06f);
-	shader.SetUniform1f("pointLight.quadratic", 0.02f);
+	shader.SetUniform1f("pointLight.linear", 0.3f);
+	shader.SetUniform1f("pointLight.quadratic", 0.1f);
 
 
-	//Fonte de luz holofote 
+	//Fonte de luz holofote						
 	shader.SetUniform3f("spotLight.position", 0.0, 10.0f, 0.0f);
 	shader.SetUniform3f("spotLight.ambient", 0.3f, 0.3f, 0.3f);
 	shader.SetUniform3f("spotLight.diffuse", 1.0f, 1.0f, 1.0f);
@@ -510,6 +525,14 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 	
 }
 
+Object3D Load(const std::string obj_model_filepath)
+{
+	
+	Object3D model(obj_model_filepath.c_str());
+
+	return model;
+}
+
 
 
 void scrollCallback(GLFWwindow* window, double xoffset, double yoffset) {
@@ -530,7 +553,9 @@ void scrollCallback(GLFWwindow* window, double xoffset, double yoffset) {
 
 #pragma endregion
 
+void Render(glm::vec3 position, glm::vec3 orientation, Shader shader) {
 
+}
 
 void print_error(int error, const char* description) {
 	std::cout << description << std::endl;

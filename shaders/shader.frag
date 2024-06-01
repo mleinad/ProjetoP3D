@@ -3,6 +3,7 @@
 uniform mat4 Model;
 uniform mat4 View;
 uniform mat4 ModelView;
+uniform mat4 SpotLightModelView;
 
 out vec4 color;
 
@@ -213,8 +214,8 @@ vec4 calcSpotLight(SpotLight light, out vec4 ambient)
 {
     ambient = vec4(material.ambient * light.ambient, 1.0);
 
-    vec3 lightPositionEyeSpace = (View * vec4(light.position, 1.0)).xyz;
-    vec3 spotDirectionEyeSpace = normalize((View * vec4(light.spotDirection, 0.0)).xyz);
+    vec3 lightPositionEyeSpace = (SpotLightModelView * vec4(light.position, 1.0)).xyz;
+    vec3 spotDirectionEyeSpace = normalize((SpotLightModelView * vec4(light.spotDirection, 0.0)).xyz);
 
     vec3 L = normalize(lightPositionEyeSpace - vPositionEyeSpace);
     vec3 N = normalize(vNormalEyeSpace);
