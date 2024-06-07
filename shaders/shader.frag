@@ -73,7 +73,7 @@ vec3 diffuseColor;
 uniform bool spotLightOn, pointLightOn, directionalLightOn, ambientLightOn;
 
 
-uniform bool IsTable; //soluçao da treta -> implementar multiplos shaders
+uniform bool IsTable; // -> implementar multiplos shaders em vez
 
 
 
@@ -150,7 +150,7 @@ void main()
 
 	if(IsTable)
 	{
-		color = vec4(1.0f,1.0f ,1.0f,1.0f) *( emissive + (ambient/4) + light1 + light2 +light3);
+		color = vec4(0.25f, 0.60f, 0.07f, 1.0f) *( emissive + (ambient/4) + light1 + light2 +light3);
 	}
 	else
 	{

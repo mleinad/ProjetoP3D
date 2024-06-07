@@ -79,6 +79,9 @@ int main() {
 	GLFWwindow* window;
 
 
+
+
+
 	glfwSetErrorCallback(print_error);
 
 
@@ -108,6 +111,8 @@ int main() {
 	// Enable debug output
 	glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GL_TRUE);
 	glEnable(GL_DEBUG_OUTPUT);
+
+
 	glDebugMessageCallback(MessageCallback, 0);
 	glfwSetKeyCallback(window, key_callback);
 
@@ -135,13 +140,17 @@ int main() {
 	Texture Textures[MODEL_COUNT];
 
 
+
+	//inicializa as 15 bolas
 	for (int i = 0; i< MODEL_COUNT; i++) {
 
 		InstallStruct installStruct;
 		
 		std::string fileName = "OBJ files/Ball" + std::to_string(i+1) + ".obj";
 
-		models.push_back(Load(fileName));
+		models.push_back(
+			Load(fileName) //retorna Object3D
+		);
 
 		installStruct.layout = &layout_v;
 		installStruct.objFile = &models[i];
@@ -153,17 +162,19 @@ int main() {
 	}
 
 
-
-	
 	shader.Bind();
 
-	
+	//bind do shader
+
+	//mesa
 	Object3D Table("OBJ files/cube.obj", false);
 	
 	VertexArray VAO_table;
 	VertexBuffer VBO_table;
 
 	InstallStruct installStruct;
+	
+	
 	installStruct.layout = &layout_v;
 	installStruct.objFile = &Table;
 	installStruct.vao = &VAO_table;
@@ -290,14 +301,16 @@ int main() {
 	Mouse mouse;
 	glm::mat4 rotation = glm::mat4(1.0f);
 	float angle =0.0f;
-
+	
+	//loop de renderizaçao
 	while (!glfwWindowShouldClose(window))
 	{
 
+		//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
+		//clear do buffer
 		buffer.Clear();
 
-		// Model
 
 		view = glm::lookAt(world_position, glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 
@@ -314,8 +327,10 @@ int main() {
 		
 		glm::vec3 translation;
 
-
 		mouse.CamMove(window);
+
+
+
 		glm::quat quaternionY = glm::angleAxis(mouse.angleY, glm::vec3(0.0f, 1.0f, 0.0f));
 		glm::quat quaternionX = glm::angleAxis(mouse.angleX, glm::vec3(1.0, 0.0f, 0.0f));
 
@@ -333,7 +348,8 @@ int main() {
 			if (!physics.CheckCollisions(ModelViews[i], ModelViews))//check collision 
 			{
 			
-				if (isMoving) {
+				if (isMoving) 
+				{
 
 					if (i == 0)
 					{
@@ -354,11 +370,11 @@ int main() {
 
 			
 			
-			//model = model * rotation;
 			model = glm::translate(glm::mat4(1.0f), translation);
 
 			model = glm::toMat4(quaternionY) * model;
 			model = glm::toMat4(quaternionX) * model;
+
 			shader.SetUniformMat4f("SpotLightModelView", view);
 
 			ModelViews[i] = view * model;
@@ -371,6 +387,8 @@ int main() {
 		
 			
 
+
+			//material passado para o shader
 			if (material)
 			{
 				shader.SetUniform3f("material.emissive", 0.0f, 0.0f, 0.0f);
@@ -391,7 +409,6 @@ int main() {
 			
 
 			Textures[i].Bind();
-
 			buffer.Draw(VAOs[i], models[i].VertexCount, shader);
 
 		}
@@ -448,7 +465,7 @@ void SetUniforms(Shader shader) {
 
 	// Fonte de luz direcional
 	shader.SetUniform3f("directionalLight.direction", 0.0f, 0.0f, 0.0f);
-	shader.SetUniform3f("directionalLight.ambient", 0.2f, 0.2f, 0.2f);
+	shader.SetUniform3f("directionalLight.ambient", 0.0f, 0.0f, 0.0f);
 	shader.SetUniform3f("directionalLight.diffuse", 1.0f, 1.0f, 1.0f);
 	shader.SetUniform3f("directionalLight.specular", 1.0f, 1.0f, 1.0f);
 
@@ -552,10 +569,6 @@ void scrollCallback(GLFWwindow* window, double xoffset, double yoffset) {
 
 
 #pragma endregion
-
-void Render(glm::vec3 position, glm::vec3 orientation, Shader shader) {
-
-}
 
 void print_error(int error, const char* description) {
 	std::cout << description << std::endl;

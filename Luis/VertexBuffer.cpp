@@ -29,7 +29,7 @@ void VertexBuffer::Unbind() const {
 
 void VertexBuffer::LateInit(const void* data, unsigned int size) {
     
-    GLCall(glGenBuffers(1, &m_BufferID));
+    GLCall(glGenBuffers(1, &m_BufferID));   
     GLCall(glBindBuffer(GL_ARRAY_BUFFER, m_BufferID));
     GLCall(glBufferData(GL_ARRAY_BUFFER, size, data, GL_STATIC_DRAW));
 }

@@ -36,8 +36,6 @@ struct Material
         //add path
 
     }
-
-
 };
 
 

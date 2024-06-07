@@ -6,12 +6,14 @@
 
 #include "Renderer.h"
 
+
+
 Shader::Shader(const std::string& fragmentFile, const std::string& vertexFile)
     : m_FragmentFile(fragmentFile), m_VertexFile(vertexFile), m_BufferID(0)
 {
     std::string fragSource, vertSource;
-    fragSource = ParseShader(m_FragmentFile);
-    vertSource = ParseShader(m_VertexFile);
+    fragSource = ParseShader(m_FragmentFile); //transforma em string
+    vertSource = ParseShader(m_VertexFile);   
 
     m_BufferID = CreateShader(vertSource, fragSource);
 }
@@ -51,8 +53,12 @@ std::string Shader::ParseShader(const std::string& filepath) {
 }
 
 unsigned int Shader::CompileShader(unsigned int type, const std::string& source) {
+  
+    
     GLCall(unsigned int id = glCreateShader(type));
-    const char* src = source.c_str();
+
+
+    const char* src = source.c_str();       
     GLCall(glShaderSource(id, 1, &src, nullptr));
     GLCall(glCompileShader(id));
 
@@ -130,6 +136,7 @@ void Shader::SetUniformVec3(const std::string& name, glm::vec3 v)
 {
     SetUniform3f(name, v.x, v.y, v.z);
 }
+
 
 #pragma endregion
 
